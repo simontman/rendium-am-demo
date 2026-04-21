@@ -1,0 +1,2074 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1440" />
+<title>Rendium · Asset Management</title>
+<meta name="description" content="Rendium Asset Management — interaktive Plattform für institutionelle Bestandshalter, Family Offices und Property Manager. KI-gestützte Mieterhöhungen, Kommunikationshistorie, Modernisierungs-Cockpit." />
+<meta property="og:title" content="Rendium · Asset Management" />
+<meta property="og:description" content="Interaktive Plattform für institutionelle Bestandshalter. KI-gestütztes Asset Management." />
+<meta property="og:type" content="website" />
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230C1A2E'/><text x='16' y='22' font-family='Georgia,serif' font-size='18' font-weight='700' fill='%234F7FFF' text-anchor='middle'>R</text></svg>" />
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  /* Rendium brand — navy spectrum */
+  --navy-deep:     #0C1A2E;
+  --navy-mid:      #13294B;
+  --navy-dark-bg:  #06090F;
+
+  /* Rendium brand — accents */
+  --rendium-blue:  #2E6FE6;
+  --bright-blue:   #4F7FFF;
+  --electric:      #6B9EB8;
+  --gold:          #C9A961;
+  --gold-bright:   #E0C584;
+
+  /* Light cockpit surfaces (kept warm-neutral to match paper feel) */
+  --bg:            #F5F2EC;
+  --bg-raised:     #FAF8F2;
+  --bg-sunken:     #EBE7DB;
+  --panel:         #FFFFFF;
+  --panel-2:       #F8F5EE;
+
+  /* Borders + structure */
+  --border:        #DDD6C6;
+  --border-soft:   #E7E0D0;
+  --border-strong: #B9B0A0;
+
+  /* Ink */
+  --ink:           #0C1A2E;
+  --ink-2:         #3C4A5F;
+  --ink-3:         #6A7386;
+  --ink-4:         #9BA0AA;
+
+  /* Aliases — accent points to Rendium-Blue now (was brass gold) */
+  --accent:        #2E6FE6;
+  --accent-hi:     #4F7FFF;
+  --accent-2:      #0C1A2E;
+
+  /* Semantic */
+  --positive:      #2F7A4A;
+  --positive-bg:   #E3F0E6;
+  --negative:      #A84434;
+  --negative-bg:   #F5E4DE;
+  --amber:         #A8741A;
+  --amber-bg:      #F5E8D0;
+  --info-bg:       #DCE6F8;
+}
+* { box-sizing: border-box; }
+html, body {
+  margin: 0; padding: 0;
+  background: var(--bg); color: var(--ink);
+  font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.005em;
+  font-size: 13px; line-height: 1.45;
+}
+.font-mono  { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+.font-disp  { font-family: 'Playfair Display', Georgia, serif; }
+.num        { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum'; }
+.caps       { text-transform: uppercase; letter-spacing: 0.18em; font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 500; color: var(--ink-3); }
+.caps-sm    { font-size: 9.5px; letter-spacing: 0.2em; }
+.h1         { font-family: 'Playfair Display', serif; font-weight: 500; font-size: 30px; line-height: 1.1; letter-spacing: -0.02em; color: var(--ink); }
+.h2         { font-family: 'Playfair Display', serif; font-weight: 500; font-size: 22px; line-height: 1.15; letter-spacing: -0.015em; color: var(--ink); }
+.h3         { font-family: 'Playfair Display', serif; font-weight: 500; font-size: 17px; line-height: 1.25; color: var(--ink); }
+.kpi        { font-family: 'Playfair Display', serif; font-weight: 500; font-size: 26px; line-height: 1.1; letter-spacing: -0.02em; color: var(--ink); }
+.kpi-sm     { font-family: 'Playfair Display', serif; font-weight: 500; font-size: 20px; color: var(--ink); }
+.serif      { font-family: 'Playfair Display', serif; font-weight: 500; }
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--ink-4); }
+
+.panel        { background: var(--panel);   border: 1px solid var(--border); border-radius: 3px; }
+.panel-cream  { background: var(--panel-2); border: 1px solid var(--border); border-radius: 3px; }
+
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  border: 1px solid var(--border-strong);
+  background: var(--panel); color: var(--ink);
+  padding: 6px 11px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px; letter-spacing: 0.06em;
+  text-transform: uppercase; font-weight: 500;
+  border-radius: 2px; cursor: pointer;
+  transition: all 120ms ease; white-space: nowrap;
+}
+.btn:hover { border-color: var(--accent); color: var(--accent); background: #FFFCF5; }
+.btn-primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.btn-primary:hover { background: var(--accent); border-color: var(--accent); color: #FFFCF5; }
+.btn-sm { padding: 4px 8px; font-size: 9.5px; }
+
+.chip {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 2px 7px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px; letter-spacing: 0.08em;
+  text-transform: uppercase; font-weight: 500;
+  border: 1px solid var(--border-strong);
+  border-radius: 2px; color: var(--ink-2);
+  background: var(--panel); white-space: nowrap;
+}
+.chip-pos { color: var(--positive); border-color: #B0CCB5; background: var(--positive-bg); }
+.chip-neg { color: var(--negative); border-color: #D4B0A5; background: var(--negative-bg); }
+.chip-amb { color: var(--amber);    border-color: #D4B98A; background: var(--amber-bg); }
+.chip-acc { color: var(--rendium-blue);  border-color: #A8C2EC; background: #E4ECF9; }
+.chip-inf { color: var(--navy-deep);     border-color: #A8B8CC; background: var(--info-bg); }
+
+.dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
+.dot-pos { background: var(--positive); }
+.dot-neg { background: var(--negative); }
+.dot-amb { background: var(--amber); }
+.dot-pulse {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--positive); display: inline-block;
+  box-shadow: 0 0 0 0 rgba(47,122,74, 0.5);
+  animation: pulse 2.2s infinite;
+}
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(47,122,74, 0.5); }
+  50%      { box-shadow: 0 0 0 7px rgba(47,122,74, 0); }
+}
+
+.hl-b      { border-bottom: 1px solid var(--border); }
+.hl-t      { border-top: 1px solid var(--border); }
+.hl-r      { border-right: 1px solid var(--border); }
+.hl-l      { border-left: 1px solid var(--border); }
+.hl-b-soft { border-bottom: 1px solid var(--border-soft); }
+
+.tbl { width: 100%; }
+.tbl-row {
+  display: grid; align-items: center;
+  border-bottom: 1px solid var(--border-soft);
+  font-size: 12.5px;
+}
+.tbl-row:last-child { border-bottom: none; }
+.tbl-row > * { padding: 9px 11px; }
+.tbl-head {
+  display: grid; align-items: center;
+  background: var(--panel-2);
+  border-bottom: 1px solid var(--border);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--ink-3); font-weight: 500;
+}
+.tbl-head > * { padding: 7px 11px; }
+.row-hover { cursor: pointer; transition: background-color 80ms; }
+.row-hover:hover { background: var(--panel-2); }
+.row-active { background: #E9F0FC; box-shadow: inset 3px 0 0 0 var(--rendium-blue); }
+.row-active:hover { background: #DCE6F8; }
+
+/* KEIN HOLD/SELL col mehr in portfolio/modern */
+.grid-props     { grid-template-columns: 70px 1.5fr 110px 55px 120px 80px 70px 80px; }
+.grid-units     { grid-template-columns: 52px 44px 1fr 72px 68px; }
+.grid-units-full{ grid-template-columns: 52px 44px 70px 70px 1fr 95px 75px 70px; }
+.grid-history   { grid-template-columns: 90px 150px 90px 76px 60px 1fr 50px; }
+.grid-modern    { grid-template-columns: 100px 100px 1fr 110px 110px 90px 90px 90px 70px; }
+.grid-comms     { grid-template-columns: 95px 120px 70px 1fr 80px 90px; }
+.grid-compare   { grid-template-columns: 1.3fr 72px 80px 72px 72px; }
+.grid-expiry    { grid-template-columns: 52px 120px 1fr 100px 70px 110px 90px; }
+.grid-vacancy   { grid-template-columns: 70px 52px 70px 1fr 90px 120px 100px; }
+.grid-collect   { grid-template-columns: 70px 52px 120px 1fr 90px 100px 90px 90px; }
+.grid-actions   { grid-template-columns: 90px 52px 100px 1fr 100px 90px; }
+
+input, select, textarea {
+  background: var(--bg-raised); border: 1px solid var(--border); color: var(--ink);
+  font-family: 'JetBrains Mono', monospace; font-size: 12px;
+  padding: 6px 9px; border-radius: 2px; outline: none; width: 100%;
+}
+input:focus, select:focus, textarea:focus { border-color: var(--accent); }
+textarea { font-family: 'Inter Tight', sans-serif; line-height: 1.5; }
+
+.tab {
+  padding: 0 14px; height: 54px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--ink-3);
+  background: none; border: none; cursor: pointer;
+  display: flex; align-items: center; gap: 6px;
+  position: relative; font-weight: 500;
+}
+.tab:hover { color: var(--ink); }
+.tab-active { color: var(--ink); }
+.tab-active::after {
+  content: ''; position: absolute;
+  left: 14px; right: 14px; bottom: 0;
+  height: 2px; background: var(--accent);
+}
+
+.modal-bg {
+  position: fixed; inset: 0; z-index: 50;
+  background: rgba(26,28,31,0.55); backdrop-filter: blur(2px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+}
+.modal {
+  background: var(--bg); border: 1px solid var(--border-strong);
+  border-radius: 3px; box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+  max-height: 90vh; display: flex; flex-direction: column;
+  overflow: hidden;
+}
+
+.highlight {
+  background: linear-gradient(135deg, #EEF3FC 0%, #DCE6F8 100%);
+  border: 1px solid #A8C2EC; border-radius: 3px;
+}
+
+.energy-badge {
+  display: inline-block;
+  width: 22px; height: 18px;
+  text-align: center; line-height: 18px;
+  color: #fff; font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  border-radius: 2px;
+}
+.energy-A { background: #2F7A4A; } .energy-B { background: #5AA36C; } .energy-C { background: #8FB84D; }
+.energy-D { background: #D4B84F; } .energy-E { background: #D49E4F; } .energy-F { background: #C67840; }
+.energy-G { background: #A84434; }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+.fade-up { animation: fadeUp 260ms ease both; }
+
+.flex { display: flex; }
+.items-center { align-items: center; }
+.items-start { align-items: flex-start; }
+.justify-between { justify-content: space-between; }
+.justify-end { justify-content: flex-end; }
+.gap-1 { gap: 4px; } .gap-2 { gap: 8px; } .gap-3 { gap: 12px; } .gap-4 { gap: 16px; } .gap-5 { gap: 20px; }
+.flex-1 { flex: 1 1 auto; } .flex-col { flex-direction: column; }
+
+.grid { display: grid; }
+.gc-2 { grid-template-columns: repeat(2, 1fr); }
+.gc-3 { grid-template-columns: repeat(3, 1fr); }
+.gc-4 { grid-template-columns: repeat(4, 1fr); }
+.gc-5 { grid-template-columns: repeat(5, 1fr); }
+.gc-6 { grid-template-columns: repeat(6, 1fr); }
+
+.p-2 { padding: 8px; } .p-3 { padding: 12px; } .p-4 { padding: 16px; } .p-5 { padding: 20px; } .p-6 { padding: 24px; }
+.px-3 { padding-left: 12px; padding-right: 12px; } .px-4 { padding-left: 16px; padding-right: 16px; } .px-5 { padding-left: 20px; padding-right: 20px; }
+.py-2 { padding-top: 8px; padding-bottom: 8px; } .py-3 { padding-top: 12px; padding-bottom: 12px; } .py-4 { padding-top: 16px; padding-bottom: 16px; }
+.mt-1 { margin-top: 4px; } .mt-2 { margin-top: 8px; } .mt-3 { margin-top: 12px; } .mt-4 { margin-top: 16px; } .mt-5 { margin-top: 20px; }
+.mb-1 { margin-bottom: 4px; } .mb-2 { margin-bottom: 8px; } .mb-3 { margin-bottom: 12px; } .mb-4 { margin-bottom: 16px; } .mb-5 { margin-bottom: 20px; }
+.ml-2 { margin-left: 8px; } .ml-auto { margin-left: auto; }
+.pt-3 { padding-top: 12px; } .pt-4 { padding-top: 16px; }
+
+.text-right { text-align: right; }
+.text-center { text-align: center; }
+.text-xs { font-size: 10.5px; }
+.text-sm { font-size: 11.5px; }
+.text-base { font-size: 13px; }
+.text-lg { font-size: 15px; }
+.leading-snug { line-height: 1.35; }
+.leading-relaxed { line-height: 1.6; }
+
+.text-ink { color: var(--ink); }
+.text-ink-2 { color: var(--ink-2); }
+.text-ink-3 { color: var(--ink-3); }
+.text-ink-4 { color: var(--ink-4); }
+.text-acc   { color: var(--accent); }
+.text-acc2  { color: var(--accent-2); }
+.text-pos   { color: var(--positive); }
+.text-neg   { color: var(--negative); }
+.text-amb   { color: var(--amber); }
+
+.bg-panel  { background: var(--panel); }
+.bg-cream  { background: var(--panel-2); }
+.bg-sunken { background: var(--bg-sunken); }
+
+.w-full { width: 100%; }
+.h-full { height: 100%; }
+.relative { position: relative; }
+.absolute { position: absolute; }
+.sticky { position: sticky; top: 0; }
+.z-10 { z-index: 10; } .z-20 { z-index: 20; } .z-30 { z-index: 30; }
+.overflow-hidden { overflow: hidden; }
+.overflow-y-auto { overflow-y: auto; }
+.truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.uppercase { text-transform: uppercase; }
+.font-medium { font-weight: 500; }
+.font-semibold { font-weight: 600; }
+.rounded-sm { border-radius: 2px; }
+.rounded    { border-radius: 3px; }
+.rounded-full { border-radius: 999px; }
+.cursor-pointer { cursor: pointer; }
+
+.bar { position: relative; display: block; height: 4px; background: var(--bg-sunken); border-radius: 1px; overflow: hidden; width: 100%; }
+.bar > .bar-fill { position: absolute; inset-block: 0; left: 0; background: var(--accent); }
+
+.pbar { position: relative; background: var(--bg-sunken); height: 8px; border-radius: 1px; overflow: hidden; }
+.pbar-fill { position: absolute; inset-block: 0; left: 0; background: var(--accent); }
+.pbar-fill-pos { background: var(--positive); }
+
+/* bar for TabCapex (inline progress) */
+.bar-fill-wrap { position: relative; background: var(--bg-sunken); height: 5px; border-radius: 1px; overflow: hidden; width: 100%; }
+.bar-fill { position: absolute; inset-block: 0; left: 0; background: var(--accent); }
+
+/* btn variants */
+.btn-ghost {
+  display: inline-flex; align-items: center; gap: 6px;
+  border: 1px solid var(--border); background: transparent; color: var(--ink-2);
+  padding: 5px 10px; font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500;
+  border-radius: 2px; cursor: pointer; transition: all 120ms ease; white-space: nowrap;
+}
+.btn-ghost:hover { border-color: var(--accent); color: var(--accent); background: #FFFCF5; }
+
+/* chip active state */
+.chip { cursor: pointer; transition: all 120ms ease; }
+.chip:hover { border-color: var(--rendium-blue); color: var(--rendium-blue); }
+.chip-on { background: var(--navy-deep); color: #F8F6F2; border-color: var(--navy-deep); }
+.chip-on:hover { background: var(--rendium-blue); border-color: var(--rendium-blue); color: #F8F6F2; }
+
+/* modal aliases */
+.modal-backdrop {
+  position: fixed; inset: 0; z-index: 50;
+  background: rgba(26,28,31,0.55); backdrop-filter: blur(2px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+}
+.modal { width: 560px; max-width: 100%; }
+.modal-head {
+  padding: 14px 18px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--panel-2);
+}
+
+/* input alias */
+.inp {
+  background: var(--bg-raised); border: 1px solid var(--border); color: var(--ink);
+  font-family: 'JetBrains Mono', monospace; font-size: 12px;
+  padding: 7px 10px; border-radius: 2px; outline: none; width: 100%;
+}
+.inp:focus { border-color: var(--accent); }
+textarea.inp { font-family: 'Inter Tight', sans-serif; line-height: 1.5; resize: vertical; }
+
+/* grid-mod (shorter alias) */
+.grid-mod { grid-template-columns: 70px 60px 1fr 90px 110px 110px 90px 110px 90px; }
+
+/* comm-row */
+.comm-row {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border-soft);
+  cursor: pointer; transition: background-color 80ms;
+}
+.comm-row:last-child { border-bottom: none; }
+.comm-row:hover { background: var(--panel-2); }
+.comm-row.row-active { background: #F7EFD7; box-shadow: inset 3px 0 0 0 var(--accent); }
+
+/* footer */
+.footer {
+  padding: 12px 24px; border-top: 1px solid var(--border);
+  display: flex; justify-content: flex-end; align-items: center;
+  background: var(--panel-2);
+  font-family: 'JetBrains Mono', monospace; font-size: 10px;
+  color: var(--ink-3); letter-spacing: 0.08em;
+}
+
+/* flex-wrap utility */
+.flex-wrap { flex-wrap: wrap; }
+
+/* grid-cols helpers */
+.grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
+.grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
+.grid-cols-4 { grid-template-columns: repeat(4, 1fr); }
+
+.block { display: block; }
+
+/* =====================================================================
+   RENDIUM NAVY HEADER — Corporate brand frame
+===================================================================== */
+.rendium-header {
+  position: sticky; top: 0; z-index: 30;
+  background: linear-gradient(180deg, #0C1A2E 0%, #0A1628 100%);
+  border-bottom: 1px solid rgba(79,127,255,0.12);
+  box-shadow: 0 1px 0 0 rgba(0,0,0,0.04), 0 4px 24px -6px rgba(12,26,46,0.18);
+}
+.rendium-logo {
+  display: flex; flex-direction: column; line-height: 1;
+  padding-right: 20px;
+  border-right: 1px solid rgba(248,246,242,0.1);
+  margin-right: 4px;
+}
+.rendium-logo-wordmark {
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: -0.01em;
+  color: #F8F6F2;
+  line-height: 1;
+}
+.rendium-logo-sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8.5px;
+  letter-spacing: 0.24em;
+  color: rgba(248,246,242,0.48);
+  margin-top: 4px;
+  font-weight: 400;
+}
+.rendium-crumbs {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  color: rgba(248,246,242,0.55);
+  text-transform: uppercase;
+}
+.rendium-crumb-active { color: #F8F6F2; font-weight: 500; }
+.rendium-crumb-sep    { color: rgba(248,246,242,0.22); }
+
+.rendium-tab {
+  padding: 0 14px; height: 60px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: rgba(248,246,242,0.6);
+  background: none; border: none; cursor: pointer;
+  display: flex; align-items: center;
+  position: relative; font-weight: 500;
+  transition: color 160ms ease;
+}
+.rendium-tab:hover { color: #F8F6F2; }
+.rendium-tab-active { color: #F8F6F2; }
+.rendium-tab-active::after {
+  content: ''; position: absolute;
+  left: 14px; right: 14px; bottom: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #4F7FFF 0%, #2E6FE6 100%);
+  border-radius: 2px 2px 0 0;
+}
+
+.rendium-demo-chip {
+  display: inline-flex; align-items: center;
+  padding: 4px 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; letter-spacing: 0.16em;
+  color: var(--gold-bright);
+  border: 1px solid rgba(201,169,97,0.3);
+  background: rgba(201,169,97,0.08);
+  border-radius: 2px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.rendium-avatar {
+  display: flex; align-items: center; justify-content: center;
+  width: 30px; height: 30px; border-radius: 4px;
+  background: linear-gradient(135deg, #4F7FFF 0%, #2E6FE6 100%);
+  color: #F8F6F2;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.04em;
+  box-shadow: 0 2px 6px rgba(46,111,230,0.3);
+}
+
+.dot-pulse-light {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: #4ADE80; display: inline-block;
+  box-shadow: 0 0 0 0 rgba(74,222,128,0.5);
+  animation: pulseLight 2.2s infinite;
+}
+@keyframes pulseLight {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(74,222,128,0.5); }
+  50%      { box-shadow: 0 0 0 7px rgba(74,222,128,0); }
+}
+
+/* Upgraded footer with Navy accent line */
+.footer {
+  padding: 14px 28px;
+  border-top: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: center;
+  background: var(--panel-2);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px; letter-spacing: 0.14em;
+  color: var(--ink-3);
+  text-transform: uppercase;
+}
+.footer-brand {
+  display: flex; align-items: center; gap: 8px;
+  color: var(--ink);
+}
+.footer-brand strong {
+  font-family: 'Playfair Display', serif;
+  font-weight: 600; font-size: 11px;
+  letter-spacing: 0.01em; text-transform: none;
+}
+
+/* Upgraded panel shadow — subtle depth */
+.panel {
+  box-shadow: 0 1px 2px rgba(12,26,46,0.03), 0 1px 0 0 rgba(255,255,255,0.8) inset;
+}
+
+/* Button primary in Rendium blue */
+.btn-primary {
+  background: linear-gradient(135deg, #4F7FFF 0%, #2E6FE6 100%) !important;
+  color: #F8F6F2 !important;
+  border-color: transparent !important;
+  box-shadow: 0 1px 3px rgba(46,111,230,0.25);
+}
+.btn-primary:hover {
+  background: linear-gradient(135deg, #5E8AFF 0%, #3E7BF0 100%) !important;
+  box-shadow: 0 2px 8px rgba(46,111,230,0.35);
+}
+
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel" data-presets="react">
+const { useState, useMemo, useEffect } = React;
+
+const fmtEUR = (n, d = 0) => n.toLocaleString('de-DE', { style: 'currency', currency: 'EUR', minimumFractionDigits: d, maximumFractionDigits: d });
+const fmtEUR0 = (n) => fmtEUR(n, 0);
+const fmtEUR2 = (n) => fmtEUR(n, 2);
+const fmtNum = (n, d = 1) => n.toLocaleString('de-DE', { minimumFractionDigits: d, maximumFractionDigits: d });
+const fmtPct = (bps, d = 2) => (bps/100).toFixed(d).replace('.', ',') + '%';
+
+const PORTFOLIO = {
+  gav: 512_800_000, nav: 487_340_000, properties: 11, units: 284,
+  occupancy: 9620, walt: 3.8, passing: 21_840_000, market: 26_120_000,
+  ervUplift: 1960, capexBacklog: 4_280_000,
+  rentCollection: 98.4, arrears: 187_540, openActions: 23,
+};
+
+const PROPERTIES = [
+  { id:'p1', code:'OBJ-A',  name:'Torstraße 128',       dist:'Mitte',           bj:1907, units:31, gav:62_400_000, yoc:3.92, capex:420_000, ervGap:2180, occ:9677, energy:'D', energyKwh:132, owner:'Berliner Jungens Development GmbH', px:0.51, py:0.50 },
+  { id:'p2', code:'OBJ-B',  name:'Bergmannstraße 44',   dist:'Kreuzberg',       bj:1904, units:24, gav:41_800_000, yoc:3.61, capex:680_000, ervGap:2410, occ:9583, energy:'E', energyKwh:168, owner:'Novem Grundbesitz GmbH & Co. KG', px:0.54, py:0.62 },
+  { id:'p3', code:'OBJ-C',  name:'Leibnizstraße 72',    dist:'Charlottenburg',  bj:1912, units:28, gav:56_100_000, yoc:3.74, capex:310_000, ervGap:1890, occ:9643, energy:'C', energyKwh:98,  owner:'Klingsöhr Projektmanagement GmbH', px:0.35, py:0.52 },
+  { id:'p4', code:'OBJ-D',  name:'Turmstraße 19',       dist:'Moabit',          bj:1899, units:36, gav:48_600_000, yoc:4.11, capex:720_000, ervGap:2260, occ:9444, energy:'E', energyKwh:172, owner:'Berliner Jungens Development GmbH', px:0.48, py:0.44 },
+  { id:'p5', code:'OBJ-E',  name:'Schloßstraße 96',     dist:'Steglitz',        bj:1925, units:22, gav:32_900_000, yoc:4.28, capex:180_000, ervGap:1120, occ:9545, energy:'D', energyKwh:144, owner:'Novem Grundbesitz GmbH & Co. KG', px:0.37, py:0.78 },
+  { id:'p6', code:'OBJ-F',  name:'Rosenthaler Str. 51', dist:'Mitte',           bj:1910, units:19, gav:44_700_000, yoc:3.58, capex:260_000, ervGap:2040, occ:9737, energy:'C', energyKwh:102, owner:'Berliner Jungens Development GmbH', px:0.55, py:0.48 },
+  { id:'p7', code:'OBJ-G',  name:'Oranienstraße 88',    dist:'Kreuzberg',       bj:1892, units:27, gav:47_200_000, yoc:3.69, capex:540_000, ervGap:2590, occ:9259, energy:'F', energyKwh:198, owner:'Klingsöhr Projektmanagement GmbH', px:0.56, py:0.63 },
+  { id:'p8', code:'OBJ-H',  name:'Bleibtreustraße 14',  dist:'Charlottenburg',  bj:1898, units:21, gav:38_400_000, yoc:3.81, capex:210_000, ervGap:1780, occ:9524, energy:'D', energyKwh:138, owner:'Klingsöhr Projektmanagement GmbH', px:0.33, py:0.55 },
+  { id:'p9', code:'OBJ-I',  name:'Beusselstraße 63',    dist:'Moabit',          bj:1901, units:29, gav:39_900_000, yoc:4.02, capex:490_000, ervGap:2110, occ:9655, energy:'E', energyKwh:162, owner:'Berliner Jungens Development GmbH', px:0.44, py:0.40 },
+  { id:'p10',code:'OBJ-J',  name:'Grunewaldstr. 27',    dist:'Steglitz',        bj:1938, units:25, gav:34_800_000, yoc:4.35, capex:230_000, ervGap:1240, occ:9600, energy:'D', energyKwh:146, owner:'Novem Grundbesitz GmbH & Co. KG', px:0.40, py:0.80 },
+  { id:'p11',code:'OBJ-K',  name:'Körtestraße 12',      dist:'Kreuzberg',       bj:1906, units:22, gav:36_000_000, yoc:3.72, capex:240_000, ervGap:2320, occ:9545, energy:'D', energyKwh:136, owner:'Berliner Jungens Development GmbH', px:0.56, py:0.60 },
+];
+
+const BERLIN_OUTLINE_PATH = "M 414.2,574.6 L 399.4,558.2 L 376.8,573.5 L 358.0,573.0 L 345.2,551.3 L 326.2,569.0 L 301.8,573.9 L 286.4,564.7 L 275.1,545.4 L 248.9,549.3 L 223.8,559.3 L 200.4,572.7 L 177.3,586.9 L 189.0,597.5 L 174.9,604.6 L 151.0,605.2 L 140.0,617.8 L 148.9,601.4 L 133.9,600.3 L 114.9,582.2 L 111.5,576.0 L 100.4,578.0 L 89.0,558.7 L 109.3,545.6 L 122.7,524.2 L 121.3,505.6 L 113.8,484.3 L 113.7,459.3 L 126.1,438.8 L 142.8,417.8 L 158.5,395.5 L 175.5,374.4 L 153.4,361.8 L 130.3,358.9 L 113.6,351.8 L 116.5,324.9 L 120.7,298.0 L 133.4,288.5 L 142.3,271.7 L 149.9,246.3 L 139.5,228.5 L 119.1,226.4 L 135.2,214.1 L 154.3,195.6 L 178.7,201.5 L 203.2,210.7 L 226.5,213.1 L 215.2,191.8 L 211.3,170.8 L 223.0,146.3 L 236.9,131.5 L 263.3,130.3 L 279.6,119.4 L 284.8,104.2 L 301.8,91.2 L 298.2,68.2 L 318.3,62.9 L 322.7,72.9 L 332.2,95.0 L 334.7,121.5 L 344.1,126.6 L 369.6,133.3 L 394.6,130.6 L 416.9,116.4 L 429.1,100.9 L 438.9,78.3 L 460.1,88.0 L 479.5,96.6 L 491.6,80.0 L 509.3,72.2 L 531.6,60.7 L 511.1,49.2 L 512.0,32.0 L 530.6,20.0 L 535.1,32.5 L 546.5,37.9 L 556.7,59.7 L 579.8,73.8 L 592.4,85.6 L 583.0,109.4 L 572.1,131.2 L 566.5,157.1 L 580.3,178.3 L 605.1,180.2 L 630.1,188.4 L 651.7,204.7 L 669.4,217.7 L 679.1,239.8 L 687.4,262.1 L 713.9,268.4 L 741.0,271.6 L 731.6,282.0 L 745.4,295.6 L 772.1,295.9 L 759.5,316.1 L 743.9,338.0 L 738.0,364.6 L 735.2,384.4 L 727.8,408.2 L 736.4,419.8 L 743.5,410.8 L 766.8,398.5 L 791.6,406.3 L 812.8,421.4 L 831.0,435.4 L 838.9,432.0 L 839.2,420.1 L 858.8,436.7 L 879.2,449.3 L 904.6,456.0 L 911.0,473.0 L 897.2,466.6 L 881.5,483.3 L 868.3,480.1 L 887.9,492.3 L 876.8,513.3 L 887.0,535.4 L 870.4,553.2 L 848.7,563.1 L 833.8,579.3 L 842.2,589.6 L 839.8,610.8 L 821.3,615.8 L 805.7,635.1 L 795.3,656.5 L 786.3,680.0 L 770.1,661.0 L 773.5,634.7 L 774.3,615.0 L 761.0,603.1 L 740.7,604.9 L 728.6,599.4 L 712.2,580.5 L 693.8,580.3 L 667.5,586.8 L 640.3,587.1 L 639.4,566.5 L 615.4,563.3 L 589.0,570.9 L 569.9,568.4 L 560.0,543.0 L 542.6,530.0 L 518.3,543.4 L 494.8,555.8 L 502.3,581.9 L 506.4,607.8 L 488.1,621.4 L 461.6,620.7 L 453.1,599.7 L 438.3,589.4 Z";
+
+const OUTLINE_BBOX = { x0: 89, y0: 20, x1: 911, y1: 680 };
+const pinXY = (p) => ({
+  x: OUTLINE_BBOX.x0 + p.px * (OUTLINE_BBOX.x1 - OUTLINE_BBOX.x0),
+  y: OUTLINE_BBOX.y0 + p.py * (OUTLINE_BBOX.y1 - OUTLINE_BBOX.y0),
+});
+
+function genUnits(propCode) {
+  if (propCode === 'OBJ-A') {
+    return [
+      { n:'WE 01', floor:'EG',   qm:48.2,  rooms:1.5, rent: 704.12, status:'VERMIETET', eurSqm:14.61, tId:'M-4821', start:'2019-09-01', lastInc:'2024-04-01', contract:'UNBEFRISTET', energy:'D', energyKwh:128 },
+      { n:'WE 02', floor:'EG',   qm:72.8,  rooms:2.5, rent:1248.00, status:'VERMIETET', eurSqm:17.14, tId:'M-3904', start:'2021-02-01', lastInc:'2025-04-01', contract:'UNBEFRISTET', energy:'D', energyKwh:134 },
+      { n:'WE 03', floor:'1.OG', qm:74.7,  rooms:3.0, rent:1287.90, status:'VERMIETET', eurSqm:17.24, tId:'M-5117', start:'2022-06-01', lastInc:'2025-04-01', contract:'UNBEFRISTET', energy:'D', energyKwh:132, focus:true },
+      { n:'WE 04', floor:'1.OG', qm:56.4,  rooms:2.0, rent: 904.70, status:'VERMIETET', eurSqm:16.04, tId:'M-6203', start:'2020-11-01', lastInc:'2024-04-01', contract:'UNBEFRISTET', energy:'D', energyKwh:130 },
+      { n:'WE 05', floor:'2.OG', qm:98.1,  rooms:3.5, rent:1712.60, status:'VERMIETET', eurSqm:17.46, tId:'M-7340', start:'2023-08-01', lastInc: null,         contract:'UNBEFRISTET', energy:'D', energyKwh:129 },
+      { n:'WE 06', floor:'2.OG', qm:55.9,  rooms:2.0, rent: 889.30, status:'VERMIETET', eurSqm:15.91, tId:'M-2788', start:'2018-05-01', lastInc:'2023-07-01', contract:'UNBEFRISTET', energy:'D', energyKwh:131 },
+      { n:'WE 07', floor:'3.OG', qm:82.4,  rooms:3.0, rent:1433.00, status:'VERMIETET', eurSqm:17.39, tId:'M-8104', start:'2022-01-01', lastInc:'2025-01-01', contract:'UNBEFRISTET', energy:'D', energyKwh:128 },
+      { n:'WE 08', floor:'3.OG', qm:48.6,  rooms:1.5, rent: 765.00, status:'LEER',      eurSqm:15.74, tId: null,    start: null,         lastInc: null,        contract: null,          energy:'D', energyKwh:132 },
+      { n:'WE 09', floor:'4.OG', qm:91.3,  rooms:3.0, rent:1594.70, status:'VERMIETET', eurSqm:17.47, tId:'M-9412', start:'2024-03-01', lastInc: null,         contract:'UNBEFRISTET', energy:'D', energyKwh:127 },
+      { n:'WE 10', floor:'4.OG', qm:63.2,  rooms:2.5, rent:1051.80, status:'VERMIETET', eurSqm:16.64, tId:'M-1576', start:'2020-04-01', lastInc:'2024-04-01', contract:'UNBEFRISTET', energy:'D', energyKwh:133 },
+      { n:'WE 11', floor:'DG',   qm:108.4, rooms:4.0, rent:1950.20, status:'VERMIETET', eurSqm:17.99, tId:'M-0891', start:'2019-02-01', lastInc:'2024-04-01', contract:'UNBEFRISTET', energy:'D', energyKwh:141 },
+      { n:'WE 12', floor:'DG',   qm:68.9,  rooms:2.5, rent:1180.40, status:'KÜNDIGUNG', eurSqm:17.13, tId:'M-6654', start:'2017-09-01', lastInc:'2023-04-01', contract:'BIS 2026-07-31', energy:'D', energyKwh:138 },
+    ];
+  }
+  const prop = PROPERTIES.find(p => p.code === propCode);
+  if (!prop) return [];
+  const avg = (prop.gav * prop.yoc / 100) / 12 / prop.units;
+  const arr = [];
+  for (let i = 1; i <= Math.min(prop.units, 12); i++) {
+    const qm = 55 + (i * 3.2) % 50;
+    const rent = avg * (0.85 + (i % 4) * 0.12);
+    const status = (i === 3 || i === 9) ? 'LEER' : (i === 7) ? 'KÜNDIGUNG' : 'VERMIETET';
+    arr.push({
+      n: `WE ${String(i).padStart(2,'0')}`,
+      floor: ['EG','1.OG','2.OG','3.OG','DG'][Math.min(4, Math.floor((i-1)/3))],
+      qm: Math.round(qm*10)/10,
+      rooms: 1.5 + (i%3),
+      rent: Math.round(rent*100)/100,
+      status,
+      eurSqm: Math.round((rent/qm)*100)/100,
+      tId: status === 'LEER' ? null : `M-${Math.floor(1000 + i * 723) % 9999}`,
+      start: status === 'LEER' ? null : `20${20 + (i%6)}-0${(i%9)+1}-01`,
+      lastInc: status === 'LEER' ? null : `2024-0${(i%9)+1}-01`,
+      contract: status === 'LEER' ? null : 'UNBEFRISTET',
+      energy: prop.energy,
+      energyKwh: prop.energyKwh + (i % 4) - 2,
+    });
+  }
+  return arr;
+}
+
+const RENT_HISTORY = [
+  { date:'2019-06-01', type:'NEUVERMIETUNG',   rent:1055.00, eurSqm:14.12, delta:null,  reason:'Erstbezug nach Sanierung',                                 doc:'Mietvertrag v. 12.05.2019' },
+  { date:'2020-07-01', type:'MIETPREISBREMSE', rent:1078.45, eurSqm:14.43, delta:2.22,  reason:'MPB-Zulässigkeit geprüft',                                 doc: null },
+  { date:'2021-04-01', type:'VPI-INDEXIERUNG', rent:1101.50, eurSqm:14.74, delta:2.14,  reason:'VPI +3,1% (2020 → 2021), vertraglich §557b BGB',           doc:'Schreiben 2021-03-12' },
+  { date:'2022-06-01', type:'MIETERWECHSEL',   rent:1198.80, eurSqm:16.05, delta:8.83,  reason:'Neuvermietung Mieter M-5117, Mietpreisbremse ausgenutzt',  doc:'Mietvertrag 2022-05-18' },
+  { date:'2023-04-01', type:'VPI-INDEXIERUNG', rent:1231.50, eurSqm:16.48, delta:2.73,  reason:'VPI +2,9% (gedeckelt auf Kappungsgrenze)',                 doc:'Schreiben 2023-03-10' },
+  { date:'2024-04-01', type:'VPI-INDEXIERUNG', rent:1248.00, eurSqm:16.71, delta:1.34,  reason:'VPI +1,34%, Kappungsgrenze 3J/15% beachtet',               doc:'Schreiben 2024-03-08' },
+  { date:'2025-04-01', type:'VPI-INDEXIERUNG', rent:1287.90, eurSqm:17.24, delta:3.20,  reason:'VPI +3,2% (2024 → 2025)',                                  doc:'Schreiben 2025-03-05' },
+];
+const RENT_PROJECTED = { date:'2026-04-01', rent:1315.10, eurSqm:17.60, delta:2.11, type:'VPI-PROJEKTION', reason:'Annahme VPI +2,1%' };
+
+const MIETSPIEGEL = {
+  feld: 'H1 · Berlin-Mitte · Bj. 1905–1918 · mittlere Wohnlage',
+  min: 16.80, max: 21.40, mean: 19.10,
+  quelle: 'Qualifizierter Mietspiegel Berlin 2025, gültig bis 31.12.2026',
+};
+const VERGLEICHS = [
+  { obj:'OBJ-A · WE 07', qm: 82.4, eurSqm:17.39, bj:1907, lage:'mittel' },
+  { obj:'OBJ-F · WE 04', qm: 76.1, eurSqm:18.82, bj:1912, lage:'mittel' },
+  { obj:'OBJ-A · WE 11', qm:108.4, eurSqm:17.99, bj:1907, lage:'mittel' },
+];
+
+const TICKETS = {
+  'OBJ-A': [
+    { id:'T-3912', status:'AMBER', unit:'WE 03', title:'Tropfender Wasserhahn Küche',           age:3,  due:'2026-04-25', type:'Reparatur' },
+    { id:'T-3908', status:'GREEN', unit:'WE 05', title:'NK-Abrechnung 2024 verschickt',         age:12, due:null,         type:'Schriftverkehr' },
+    { id:'T-3901', status:'AMBER', unit:'WE 09', title:'Fenster WZ schließt nicht vollständig', age:8,  due:'2026-05-02', type:'Reparatur' },
+    { id:'T-3897', status:'RED',   unit:'WE 12', title:'NK-Nachzahlung 2024 ausstehend (€892)', age:22, due:'2026-04-21', type:'Mietrückstand' },
+    { id:'T-3884', status:'GREEN', unit:'WE 06', title:'Heizung gibt Geräusche — geprüft',      age:34, due:null,         type:'Reparatur' },
+  ],
+};
+
+const COMMUNICATIONS = {
+  'OBJ-A': [
+    { id:'C-2104', date:'2026-04-18 09:42', channel:'E-MAIL',  direction:'OUT', unit:'WE 12', tId:'M-6654', subject:'Mahnung Nebenkostennachzahlung NKA 2024', body:'2. Mahnung per Einschreiben mit Rückschein versandt. Offener Betrag €892,40. Zahlungsziel: 2026-04-21.', author:'ST · AM' },
+    { id:'C-2103', date:'2026-04-15 14:18', channel:'TICKET',  direction:'IN',  unit:'WE 03', tId:'M-5117', subject:'Ticket T-3912 eröffnet',                    body:'Mieter meldet tropfenden Wasserhahn in Küche. Sanitärbetrieb Kasper benachrichtigt, Termin 2026-04-25.', author:'Mieter' },
+    { id:'C-2099', date:'2026-04-12 11:02', channel:'BRIEF',   direction:'OUT', unit:'WE 09', tId:'M-9412', subject:'Reparatur Fensterflügel WZ',                body:'Schreiben an Mieter betr. Besichtigungstermin Glaserei Schütze, 2026-04-28. Einschreiben Einwurf.', author:'ST · AM' },
+    { id:'C-2094', date:'2026-04-05 16:35', channel:'TELEFON', direction:'IN',  unit:'WE 05', tId:'M-7340', subject:'Rückfrage NK-Abrechnung 2024',              body:'Mieter: Warmwasser-Verbrauch überdurchschnittlich. Hinweis Zählerwechsel Q1-2024 gegeben. Abrechnung bleibt bestehen.', author:'ST · AM' },
+    { id:'C-2088', date:'2026-03-28 10:15', channel:'E-MAIL',  direction:'OUT', unit:'ALLE',  tId: null,    subject:'Hausordnung · Anpassung Müllentsorgung',    body:'Rundschreiben an alle 12 Parteien betr. neue Abfallsatzung BSR. Zeitpunkt: 2026-05-01.', author:'ST · AM' },
+    { id:'C-2082', date:'2026-03-15 08:44', channel:'NOTIZ',   direction:'INT', unit:'WE 06', tId:'M-2788', subject:'Begehung protokolliert',                    body:'Regelbegehung: Wohnung in gutem Zustand. Kleinreparatur-Klausel greift. Mieter meldet: nichts.', author:'HV · Kasper' },
+    { id:'C-2077', date:'2026-03-05 12:00', channel:'BRIEF',   direction:'OUT', unit:'ALLE',  tId: null,    subject:'Mieterhöhungsschreiben (VPI) 2025 zum 2025-04-01', body:'Massenversand §557b-Anpassung an alle 11 VPI-Mieter. 15-Monatsfrist geprüft, Kappung OK.', author:'ST · AM' },
+    { id:'C-2063', date:'2026-02-20 13:22', channel:'E-MAIL',  direction:'IN',  unit:'WE 07', tId:'M-8104', subject:'Bestätigung VPI-Erhöhung 2025',             body:'Mieter bestätigt Anpassung zum 2025-01-01, Dauerauftrag angepasst.', author:'Mieter' },
+    { id:'C-2051', date:'2026-01-18 15:10', channel:'TELEFON', direction:'OUT', unit:'WE 08', tId: null,    subject:'Erstbesichtigung Neumieter-Kandidat',        body:'Telefontermin Dr. Kreuzer, Facharzt, 3-Jahres-Mietvertrag geplant, Bonität geprüft, Zusage erwartet KW 5.', author:'ST · AM' },
+    { id:'C-2048', date:'2026-01-15 09:05', channel:'NOTIZ',   direction:'INT', unit:'WE 08', tId: null,    subject:'Objektfoto-Upload Neuvermietung',            body:'12 Fotos + Grundriss in Datenraum hochgeladen. Inserat ImmoScout/Kleinanzeigen geschaltet, Ziel-Miete €790 kalt.', author:'ST · AM' },
+  ],
+};
+
+const TIMELINE = [
+  { date:'2026-04-18', kind:'SCHRIFT.', label:'Mahnung versandt · NK-Nachzahlung WE 12' },
+  { date:'2026-04-15', kind:'TICKET',   label:'Ticket T-3912 eröffnet · Wasserhahn WE 03' },
+  { date:'2026-03-05', kind:'MIETE',    label:'Zahlung März eingegangen · €1.287,94' },
+  { date:'2025-04-01', kind:'MIETE',    label:'Mieterhöhung WE 03: €1.248,00 → €1.287,90 (+3,2%)' },
+  { date:'2025-03-05', kind:'SCHRIFT.', label:'VPI-Erhöhungsschreiben versandt (massenhaft)' },
+  { date:'2024-08-12', kind:'CAPEX',    label:'Fassaden-Sanierung abgeschlossen · €48.200' },
+  { date:'2024-04-01', kind:'MIETE',    label:'Mieterhöhung WE 03: +1,34%' },
+  { date:'2022-06-01', kind:'MIETER',   label:'Mieterwechsel WE 03 · Neuvermietung an M-5117' },
+];
+
+const VACANCY_AGING = [
+  { obj:'OBJ-B', unit:'WE 14', qm:68.2, since:'2025-11-12', daysVacant:159, ask:1245, marketing:'EMPFEHLUNG', notes:'Mietpreisbremse-Check offen' },
+  { obj:'OBJ-A', unit:'WE 08', qm:48.6, since:'2026-01-05', daysVacant:105, ask: 790, marketing:'ANZEIGE ONLINE', notes:'3 Besichtigungen geplant' },
+  { obj:'OBJ-D', unit:'WE 22', qm:72.1, since:'2026-02-10', daysVacant: 69, ask:1150, marketing:'RENOVIERUNG', notes:'Fertig KW 20' },
+  { obj:'OBJ-G', unit:'WE 04', qm:54.8, since:'2026-02-28', daysVacant: 51, ask: 895, marketing:'ANZEIGE ONLINE', notes:'2 Bewerbungen in Prüfung' },
+  { obj:'OBJ-I', unit:'WE 11', qm:82.0, since:'2026-03-18', daysVacant: 33, ask:1310, marketing:'RENOVIERUNG', notes:'Streichen 2026-05-02' },
+];
+
+const LEASE_EXPIRY = [
+  { obj:'OBJ-A', unit:'WE 12', tId:'M-6654', endDate:'2026-07-31', daysLeft: 102, rent:1180.40, action:'GEKÜNDIGT MIETER' },
+  { obj:'OBJ-C', unit:'WE 09', tId:'M-3325', endDate:'2026-09-30', daysLeft: 163, rent: 995.00, action:'VERLÄNGERUNG VERH.' },
+  { obj:'OBJ-G', unit:'WE 18', tId:'M-7821', endDate:'2026-12-31', daysLeft: 255, rent:1102.50, action:'BEOBACHTEN' },
+  { obj:'OBJ-H', unit:'WE 05', tId:'M-4490', endDate:'2027-03-31', daysLeft: 345, rent: 928.00, action:'BEOBACHTEN' },
+];
+
+const RENT_COLLECTION_ISSUES = [
+  { obj:'OBJ-A', unit:'WE 12', tId:'M-6654', type:'MIETRÜCKSTAND',  amount:892.40,  overdue:22, last:'2026-04-18', stage:'2. MAHNUNG' },
+  { obj:'OBJ-B', unit:'WE 07', tId:'M-2204', type:'NK-NACHZAHLUNG', amount:1240.80, overdue:18, last:'2026-04-12', stage:'1. MAHNUNG' },
+  { obj:'OBJ-D', unit:'WE 31', tId:'M-8812', type:'MIETRÜCKSTAND',  amount:640.00,  overdue:9,  last:'2026-04-15', stage:'ERINNERUNG' },
+  { obj:'OBJ-G', unit:'WE 02', tId:'M-0108', type:'MIETMINDERUNG',  amount:420.00,  overdue:45, last:'2026-03-15', stage:'RECHTL. PRÜFUNG' },
+];
+
+const OPEN_ACTIONS = [
+  { id:'A-019', obj:'OBJ-A', due:'2026-04-21', type:'FRIST', title:'VPI-Mieterhöhungsschreiben versenden (11 WE)', owner:'ST' },
+  { id:'A-018', obj:'OBJ-B', due:'2026-04-25', type:'TERMIN', title:'Besichtigung WE 14 mit 2 Bewerbern', owner:'ST' },
+  { id:'A-017', obj:'OBJ-G', due:'2026-05-02', type:'CAPEX', title:'Angebot Heizungstausch (§71 GEG) einholen', owner:'HV' },
+  { id:'A-016', obj:'OBJ-C', due:'2026-05-10', type:'DOKUMENT', title:'Jahresabschluss WEG-Protokoll archivieren', owner:'ST' },
+  { id:'A-015', obj:'OBJ-A', due:'2026-05-15', type:'FRIST', title:'NK-Abrechnung 2025 an Mieter §556 BGB', owner:'ST' },
+  { id:'A-014', obj:'OBJ-D', due:'2026-05-20', type:'TERMIN', title:'Regelbegehung Turmstraße 19', owner:'HV' },
+];
+
+const MODERNIZATIONS = [
+  { id:'M-041', obj:'OBJ-G', kat:'HEIZUNG', title:'Fernwärme-Umstellung · §71 GEG Vorgabe', budget:385_000, spent:42_000, start:'2026-03-01', end:'2026-11-30', status:'IN UMSETZUNG',    progress:11, impact:'E→C', savingsKwh:74 },
+  { id:'M-038', obj:'OBJ-B', kat:'FASSADE', title:'WDVS-Fassadendämmung Hofseite',           budget:295_000, spent:0,      start:'2026-06-15', end:'2026-12-20', status:'AUSSCHREIBUNG',   progress:0,  impact:'E→D', savingsKwh:32 },
+  { id:'M-036', obj:'OBJ-G', kat:'FENSTER', title:'Austausch Dreifach-Verglasung (15 WE)',   budget:142_000, spent:96_000, start:'2025-09-01', end:'2026-05-30', status:'IN UMSETZUNG',    progress:68, impact:'-',   savingsKwh:18 },
+  { id:'M-034', obj:'OBJ-D', kat:'DACH',    title:'Dachsanierung + Dämmung',                 budget:520_000, spent:0,      start:'2026-07-01', end:'2027-03-31', status:'GENEHMIGUNG',     progress:0,  impact:'E→D', savingsKwh:24 },
+  { id:'M-032', obj:'OBJ-A', kat:'SANITÄR', title:'Strangtausch KW/WW 3.+4. OG',              budget: 87_000, spent:87_000, start:'2025-05-01', end:'2025-10-15', status:'ABGESCHLOSSEN',   progress:100,impact:'-',   savingsKwh:0 },
+  { id:'M-029', obj:'OBJ-I', kat:'ELEKTRO', title:'E-Check Allgemeinflächen + Notbeleucht.', budget: 42_000, spent:16_000, start:'2026-02-01', end:'2026-06-30', status:'IN UMSETZUNG',    progress:38, impact:'-',   savingsKwh:0 },
+  { id:'M-026', obj:'OBJ-F', kat:'HEIZUNG', title:'Hydraulischer Abgleich',                   budget: 12_800, spent:0,      start:'2026-05-10', end:'2026-06-15', status:'TERMINIERT',      progress:0,  impact:'-',   savingsKwh:8  },
+  { id:'M-024', obj:'OBJ-E', kat:'BARRIERE',title:'Aufzug-Nachrüstung Prüfung (VDI 2566)',   budget:220_000, spent:4_500,  start:'2026-04-01', end:'2027-08-31', status:'PRÜFUNG',         progress:2,  impact:'-',   savingsKwh:0 },
+];
+
+function TopHeader({ tab, setTab, crumbs }) {
+  const tabs = [
+    { id:'PORTFOLIO',    label:'Portfolio' },
+    { id:'OBJEKT',       label:'Objekt' },
+    { id:'WOHNEINHEIT',  label:'Wohneinheit' },
+    { id:'KOMMUNIKATION', label:'Kommunikation' },
+    { id:'CAPEX',        label:'Modernisierungen' },
+  ];
+  return (
+    <header className="rendium-header">
+      <div className="flex items-center justify-between px-5" style={{ height: 60 }}>
+        <div className="flex items-center gap-5">
+          <div className="rendium-logo">
+            <div className="rendium-logo-wordmark">RENDIUM</div>
+            <div className="rendium-logo-sub">ASSET MANAGEMENT</div>
+          </div>
+          <div className="rendium-crumbs font-mono">
+            {crumbs.map((c, i) => (
+              <React.Fragment key={i}>
+                <span className={i === crumbs.length - 1 ? 'rendium-crumb-active' : ''}>{c}</span>
+                {i < crumbs.length - 1 && <span className="rendium-crumb-sep">/</span>}
+              </React.Fragment>
+            ))}
+          </div>
+        </div>
+        <nav className="flex items-center">
+          {tabs.map(t => (
+            <button key={t.id} onClick={() => setTab(t.id)}
+                    className={`rendium-tab ${tab === t.id ? 'rendium-tab-active' : ''}`}>
+              {t.label}
+            </button>
+          ))}
+        </nav>
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 font-mono" style={{ fontSize: 10, letterSpacing:'0.15em', color:'rgba(248,246,242,0.55)' }}>
+            <span className="dot-pulse-light" /> LIVE
+          </div>
+          <div className="rendium-demo-chip">DEMO · SYNTH. DATEN</div>
+          <div className="rendium-avatar">ST</div>
+        </div>
+      </div>
+    </header>
+  );
+}
+
+function PropertySidebar({ selectedProp, onSelect, title = 'Objekte' }) {
+  return (
+    <div className="panel">
+      <div className="flex items-center justify-between px-3 hl-b" style={{ height: 42 }}>
+        <div className="caps">{title} · {PROPERTIES.length}</div>
+      </div>
+      <div className="tbl-head" style={{ gridTemplateColumns:'58px 1fr 50px' }}>
+        <div>Code</div><div>Objekt</div><div className="text-right">WE</div>
+      </div>
+      <div style={{ maxHeight: 820, overflowY:'auto' }}>
+        {PROPERTIES.map(p => (
+          <div key={p.id} onClick={() => onSelect(p)}
+               className={`tbl-row row-hover ${selectedProp.id === p.id ? 'row-active' : ''}`}
+               style={{ gridTemplateColumns:'58px 1fr 50px' }}>
+            <div className="font-mono text-acc" style={{ fontSize:10.5 }}>{p.code}</div>
+            <div>
+              <div className="text-sm">{p.name}</div>
+              <div className="font-mono text-ink-3 text-xs mt-1">{p.dist}</div>
+            </div>
+            <div className="num font-mono text-right text-ink-2 text-xs">{p.units}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function EnergyBadge({ e, kwh }) {
+  return (
+    <span className="flex items-center gap-1" style={{ justifyContent:'flex-end' }}>
+      <span className={`energy-badge energy-${e}`}>{e}</span>
+      {kwh && <span className="font-mono text-ink-3 text-xs num">{kwh} kWh</span>}
+    </span>
+  );
+}
+
+function KPI({ label, value, trend, tone = 'ink-3' }) {
+  const color = { pos:'var(--positive)', neg:'var(--negative)', acc:'var(--accent)', 'ink-3':'var(--ink-3)' }[tone];
+  return (
+    <div className="panel p-4">
+      <div className="caps mb-2">{label}</div>
+      <div className="kpi num">{value}</div>
+      <div className="font-mono mt-1" style={{ fontSize: 10.5, color }}>{trend}</div>
+    </div>
+  );
+}
+
+function Metric({ label, value, sub, tone='ink', border }) {
+  const color = { pos:'var(--positive)', neg:'var(--negative)', acc:'var(--accent)', amb:'var(--amber)', ink:'var(--ink)' }[tone];
+  return (
+    <div className="p-4" style={{ borderRight: border ? '1px solid var(--border)' : 'none' }}>
+      <div className="caps">{label}</div>
+      <div className="kpi num mt-1" style={{ color }}>{value}</div>
+      <div className="font-mono text-ink-3 mt-1" style={{ fontSize:10 }}>{sub}</div>
+    </div>
+  );
+}
+
+function StatusDot({ v }) {
+  const map = { 'VERMIETET':{c:'dot-pos',l:'VERM.'}, 'LEER':{c:'dot-neg',l:'LEER'}, 'KÜNDIGUNG':{c:'dot-amb',l:'KÜND.'} }[v];
+  return (
+    <span className="flex items-center gap-1 font-mono text-xs" style={{ justifyContent:'flex-end', color:'var(--ink-3)' }}>
+      <span className={`dot ${map.c}`} />{map.l}
+    </span>
+  );
+}
+
+function ChannelChip({ ch, dir }) {
+  const icon = { 'E-MAIL':'✉', 'BRIEF':'📄', 'TELEFON':'☏', 'TICKET':'◉', 'NOTIZ':'✎' }[ch] || '·';
+  const cls  = { 'E-MAIL':'chip-inf', 'BRIEF':'chip-acc', 'TELEFON':'chip', 'TICKET':'chip-amb', 'NOTIZ':'chip' }[ch] || 'chip';
+  const dirIcon = dir === 'OUT' ? '↗' : dir === 'IN' ? '↙' : '◐';
+  return <span className={`chip ${cls}`}>{icon} {ch} {dirIcon}</span>;
+}
+
+function Field({ label, val, tone = 'ink' }) {
+  const color = { pos:'var(--positive)', neg:'var(--negative)', acc:'var(--accent)', ink:'var(--ink)' }[tone];
+  return (
+    <div className="flex items-center justify-between py-2 hl-b-soft">
+      <span className="caps">{label}</span>
+      <span className="font-mono num" style={{ fontSize:12, color }}>{val}</span>
+    </div>
+  );
+}
+
+function Stat({ label, value, icon, border }) {
+  return (
+    <div className="p-4" style={{ borderRight: border ? '1px solid var(--border)' : 'none' }}>
+      <div className="flex items-center gap-2">
+        <span className="text-ink-3" style={{ fontSize:18 }}>{icon}</span>
+        <div>
+          <div className="caps">{label}</div>
+          <div className="kpi-sm num mt-1">{value}</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function FilterGroup({ label, value, setValue, options }) {
+  return (
+    <div className="flex items-center gap-2">
+      <span className="caps caps-sm">{label}</span>
+      <div className="flex gap-1">
+        {options.map(o => (
+          <button key={o} onClick={() => setValue(o)} className="font-mono uppercase cursor-pointer"
+                  style={{ fontSize:9.5, letterSpacing:'0.08em', padding:'3px 7px',
+                           border:`1px solid ${value===o?'var(--accent)':'var(--border-strong)'}`,
+                           color: value===o?'var(--accent)':'var(--ink-3)',
+                           background: value===o?'#F7EFD7':'var(--panel)',
+                           borderRadius: 2 }}>
+            {o}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* =========================================================================
+   BERLIN MAP — echter Umriss aus Wikimedia, CC BY-SA
+   ========================================================================= */
+
+function BerlinMap({ onClick }) {
+  const [hover, setHover] = useState(null);
+  const maxGav = Math.max(...PROPERTIES.map(p => p.gav));
+  return (
+    <div className="relative" style={{ width:'100%', aspectRatio:'1000/700', background:'var(--bg-sunken)', border:'1px solid var(--border)', borderRadius: 3 }}>
+      <svg viewBox="0 0 1000 700" style={{ width:'100%', height:'100%', display:'block' }}>
+        <defs>
+          <pattern id="dots" width="18" height="18" patternUnits="userSpaceOnUse">
+            <circle cx="1" cy="1" r="0.6" fill="#C8BFA9" />
+          </pattern>
+          <radialGradient id="pinGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%"  stopColor="rgba(138,109,59,0.45)" />
+            <stop offset="70%" stopColor="rgba(138,109,59,0.08)" />
+            <stop offset="100%" stopColor="rgba(138,109,59,0)" />
+          </radialGradient>
+          <linearGradient id="berlinFill" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#FAF5E8" />
+            <stop offset="100%" stopColor="#F3ECD8" />
+          </linearGradient>
+        </defs>
+        <rect width="1000" height="700" fill="url(#dots)" />
+        <path d={BERLIN_OUTLINE_PATH} fill="url(#berlinFill)" stroke="#8A7A5E" strokeWidth="1.4" strokeLinejoin="round" />
+        <path d="M 160,430 Q 300,410 430,440 Q 540,465 640,470 Q 740,475 830,470"
+              fill="none" stroke="#A8B8CC" strokeWidth="3.5" opacity="0.6" strokeLinecap="round" />
+        <path d="M 160,430 Q 300,410 430,440 Q 540,465 640,470 Q 740,475 830,470"
+              fill="none" stroke="#5A7A95" strokeWidth="1" opacity="0.75" strokeLinecap="round" />
+        {PROPERTIES.map(p => {
+          const { x, y } = pinXY(p);
+          const r = 6 + (p.gav / maxGav) * 5;
+          const isHover = hover === p.code;
+          return (
+            <g key={p.code} transform={`translate(${x},${y})`}
+               style={{ cursor:'pointer' }}
+               onClick={() => onClick(p)}
+               onMouseEnter={() => setHover(p.code)}
+               onMouseLeave={() => setHover(null)}>
+              <circle r={r+14} fill="url(#pinGlow)" />
+              <circle r={r} fill={isHover ? '#B89056' : '#8A6D3B'} stroke="#FFF" strokeWidth="1.5" />
+              <text y={-r-4} textAnchor="middle" fontFamily="JetBrains Mono" fontSize="9" fill="#1A1C1F" fontWeight="600" letterSpacing="0.5">
+                {p.code}
+              </text>
+            </g>
+          );
+        })}
+        <g fontFamily="JetBrains Mono" fontSize="8" fill="#9A9A93" letterSpacing="1" style={{ pointerEvents:'none' }}>
+          <text x="500" y="15" textAnchor="middle">N</text>
+          <text x="500" y="693" textAnchor="middle">S</text>
+          <text x="15" y="355" textAnchor="start">W</text>
+          <text x="985" y="355" textAnchor="end">O</text>
+        </g>
+      </svg>
+      <div className="absolute font-mono text-ink-4" style={{ bottom:6, right:8, fontSize:8.5, opacity:0.7 }}>
+        Berlin-Umriss · CC BY-SA Wikimedia · Pins schematisch
+      </div>
+    </div>
+  );
+}
+
+/* =========================================================================
+   PASSING vs. ERV — full-width chart
+   ========================================================================= */
+
+function PassingVsERV() {
+  const data = PROPERTIES.map(p => ({
+    code: p.code,
+    name: p.name,
+    passing: (p.gav * p.yoc) / 100,
+    market:  (p.gav * p.yoc) / 100 * (1 + p.ervGap/10000),
+    gapPct:  p.ervGap/100,
+  }));
+  const max = Math.max(...data.map(d => d.market));
+  return (
+    <div className="flex-col gap-2" style={{ display:'flex' }}>
+      {data.map(d => (
+        <div key={d.code} className="flex items-center gap-3 text-sm">
+          <span className="font-mono text-acc" style={{ width:68, fontSize:11 }}>{d.code}</span>
+          <span className="text-ink-2" style={{ width:170 }}>{d.name}</span>
+          <div className="flex-1 relative bg-sunken" style={{ height:20, borderRadius:1 }}>
+            <div className="absolute" style={{ left:0, top:4, bottom:4, background:'var(--ink-4)', width:`${(d.passing/max)*100}%`, opacity:0.55, borderRadius:1 }} />
+            <div className="absolute" style={{ left:0, top:0, bottom:0, width:`${(d.market/max)*100}%`, border:'1px solid var(--accent)', background:'rgba(138,109,59,0.14)' }} />
+            <div className="absolute font-mono num text-acc" style={{
+              left:`${(d.market/max)*100}%`, top:'50%', transform:'translate(6px, -50%)',
+              fontSize:10, whiteSpace:'nowrap',
+            }}>
+              {fmtEUR0(d.market)}
+            </div>
+          </div>
+          <span className="num font-mono text-ink-2 text-right" style={{ width:100, fontSize:11 }}>{fmtEUR0(d.passing)}</span>
+          <span className="num font-mono text-pos text-right" style={{ width:70, fontSize:11 }}>+{fmtNum(d.gapPct,1)}%</span>
+        </div>
+      ))}
+      <div className="flex items-center gap-4 font-mono text-ink-3 hl-t mt-2 pt-3" style={{ fontSize:10 }}>
+        <div className="flex items-center gap-1"><span className="bar" style={{ background:'var(--ink-4)', opacity:0.55, width:16 }} /> PASSING RENT</div>
+        <div className="flex items-center gap-1"><span className="bar" style={{ background:'rgba(138,109,59,0.14)', border:'1px solid var(--accent)', width:16 }} /> ERV · MARKTMIETE</div>
+        <div className="ml-auto">Delta ERV – Passing = ungenutzte Mietreserve</div>
+      </div>
+    </div>
+  );
+}
+
+/* =========================================================================
+   TAB 1 — PORTFOLIO
+   ========================================================================= */
+
+function TabPortfolio({ onOpenProperty }) {
+  const districts = useMemo(() => {
+    const by = {};
+    PROPERTIES.forEach(p => { by[p.dist] = (by[p.dist] || 0) + p.gav; });
+    return Object.entries(by).sort((a,b) => b[1]-a[1]);
+  }, []);
+  const totalGav = PROPERTIES.reduce((s,p) => s + p.gav, 0);
+
+  return (
+    <div className="p-5 flex-col gap-4" style={{ display:'flex' }}>
+      <div className="grid gc-6 gap-3">
+        <KPI label="GAV"           value={fmtEUR0(PORTFOLIO.gav)}  trend="+2,1% QoQ"  tone="pos" />
+        <KPI label="NAV"           value={fmtEUR0(PORTFOLIO.nav)}  trend="+1,8% QoQ"  tone="pos" />
+        <KPI label="OBJEKTE / WE"  value={`${PORTFOLIO.properties} / ${PORTFOLIO.units}`} trend="unverändert" tone="ink-3" />
+        <KPI label="VERMIETUNGSQ." value={fmtPct(PORTFOLIO.occupancy)} trend="+40 bps QoQ" tone="pos" />
+        <KPI label="WALT"          value={`${PORTFOLIO.walt} J`}   trend="−0,1 QoQ"    tone="ink-3" />
+        <KPI label="RENT-COLLECT." value={`${fmtNum(PORTFOLIO.rentCollection,1)}%`} trend={`${fmtEUR0(PORTFOLIO.arrears)} offen`} tone="pos" />
+      </div>
+
+      <div className="grid gap-3" style={{ gridTemplateColumns: '5fr 7fr' }}>
+        <div className="panel p-4">
+          <div className="flex items-start justify-between mb-3">
+            <div>
+              <div className="caps mb-1">Geographischer Footprint</div>
+              <div className="h2">Berlin · {PROPERTIES.length} Objekte</div>
+            </div>
+            <span className="chip chip-inf">BERLIN</span>
+          </div>
+          <BerlinMap onClick={onOpenProperty} />
+          <div className="mt-3 flex-col gap-2" style={{ display:'flex' }}>
+            {districts.map(([d, v]) => (
+              <div key={d} className="flex items-center gap-3 text-sm">
+                <span className="font-mono text-ink-2" style={{ width: 110 }}>{d}</span>
+                <div className="flex-1 relative bg-sunken" style={{ height: 5, borderRadius: 1 }}>
+                  <div className="absolute" style={{ left:0, top:0, bottom:0, background:'var(--accent)', width:`${(v/totalGav)*100}%`, borderRadius:1 }} />
+                </div>
+                <span className="num font-mono text-ink-3 text-right" style={{ width: 72 }}>{fmtEUR0(v/1_000_000)}M</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="panel">
+          <div className="flex items-center justify-between px-4 hl-b" style={{ height: 44 }}>
+            <div className="caps">Objekte · sortiert nach GAV</div>
+            <div className="flex gap-2">
+              <button className="btn btn-sm">FILTER</button>
+              <button className="btn btn-sm">EXPORT</button>
+            </div>
+          </div>
+          <div className="tbl-head grid-props">
+            <div>Code</div><div>Objekt</div><div>Bezirk</div>
+            <div className="text-right">WE</div>
+            <div className="text-right">GAV</div>
+            <div className="text-right">YoC</div>
+            <div className="text-right">ERV+</div>
+            <div className="text-right">Energie</div>
+          </div>
+          {PROPERTIES.map(p => (
+            <div key={p.id} className="tbl-row grid-props row-hover" onClick={() => onOpenProperty(p)}>
+              <div className="font-mono text-acc" style={{ fontSize:11 }}>{p.code}</div>
+              <div>{p.name}</div>
+              <div className="font-mono text-ink-2" style={{ fontSize:11 }}>{p.dist}</div>
+              <div className="num font-mono text-ink-2 text-right">{p.units}</div>
+              <div className="num font-mono text-right">{fmtEUR0(p.gav)}</div>
+              <div className="num font-mono text-right text-ink-2">{fmtNum(p.yoc,2)}%</div>
+              <div className="num font-mono text-right text-pos">+{fmtNum(p.ervGap/100,1)}%</div>
+              <div className="text-right"><EnergyBadge e={p.energy} kwh={p.energyKwh} /></div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* FULL-WIDTH Passing vs. ERV */}
+      <div className="panel p-5">
+        <div className="flex items-center justify-between mb-3">
+          <div>
+            <div className="caps mb-1">Passing Rent vs. ERV (Markt) · Jährlich</div>
+            <div className="h3">Ungenutzte Miet-Reserve je Objekt · {fmtEUR0(PORTFOLIO.market - PORTFOLIO.passing)} p.a. Gesamt</div>
+          </div>
+          <div className="flex gap-2">
+            <span className="chip">PASSING: {fmtEUR0(PORTFOLIO.passing)}</span>
+            <span className="chip chip-acc">ERV: {fmtEUR0(PORTFOLIO.market)}</span>
+            <span className="chip chip-pos">+{fmtPct(PORTFOLIO.ervUplift,1)}</span>
+          </div>
+        </div>
+        <PassingVsERV />
+      </div>
+
+      {/* 4-Panel actionable cockpit */}
+      <div className="grid gap-3" style={{ gridTemplateColumns:'1fr 1fr' }}>
+
+        <div className="panel">
+          <div className="flex items-center justify-between px-4 hl-b" style={{ height: 44 }}>
+            <div>
+              <div className="caps">Leerstand · {VACANCY_AGING.length} Einheiten</div>
+              <div className="text-xs font-mono text-ink-3 mt-1">Ältester Leerstand: {VACANCY_AGING[0].daysVacant} Tage</div>
+            </div>
+            <button className="btn btn-sm">EXPOSÉ →</button>
+          </div>
+          <div className="tbl-head grid-vacancy">
+            <div>Obj</div><div>WE</div><div className="text-right">m²</div><div>Leer seit / Dauer</div>
+            <div className="text-right">Ziel-Miete</div><div>Status</div><div className="text-right">Notiz</div>
+          </div>
+          {VACANCY_AGING.map(v => (
+            <div key={v.obj+v.unit} className="tbl-row grid-vacancy">
+              <div className="font-mono text-acc text-xs">{v.obj}</div>
+              <div className="font-mono">{v.unit}</div>
+              <div className="num font-mono text-right text-ink-2">{fmtNum(v.qm,1)}</div>
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-xs text-ink-3">{v.since}</span>
+                <span className={`chip ${v.daysVacant > 120 ? 'chip-neg' : v.daysVacant > 60 ? 'chip-amb' : 'chip-pos'}`}>{v.daysVacant}T</span>
+              </div>
+              <div className="num font-mono text-right">{fmtEUR0(v.ask)}</div>
+              <div><span className="chip">{v.marketing}</span></div>
+              <div className="text-right text-xs text-ink-2 truncate" title={v.notes}>{v.notes}</div>
+            </div>
+          ))}
+        </div>
+
+        <div className="panel">
+          <div className="flex items-center justify-between px-4 hl-b" style={{ height: 44 }}>
+            <div>
+              <div className="caps">Offene Posten · Mietrückstände</div>
+              <div className="text-xs font-mono text-ink-3 mt-1">
+                Gesamt: <span className="text-neg">{fmtEUR0(RENT_COLLECTION_ISSUES.reduce((s,r) => s+r.amount,0))}</span> · {RENT_COLLECTION_ISSUES.length} Fälle
+              </div>
+            </div>
+            <button className="btn btn-sm">MAHNLAUF →</button>
+          </div>
+          <div className="tbl-head grid-collect">
+            <div>Obj</div><div>WE</div><div>Mieter</div><div>Typ</div>
+            <div className="text-right">Betrag</div><div className="text-right">Fällig</div><div>Stufe</div><div className="text-right">Letzte</div>
+          </div>
+          {RENT_COLLECTION_ISSUES.map(r => (
+            <div key={r.obj+r.unit} className="tbl-row grid-collect">
+              <div className="font-mono text-acc text-xs">{r.obj}</div>
+              <div className="font-mono">{r.unit}</div>
+              <div className="font-mono text-xs">{r.tId}</div>
+              <div className="text-xs">{r.type}</div>
+              <div className="num font-mono text-right text-neg">{fmtEUR2(r.amount)}</div>
+              <div className="num font-mono text-right text-ink-2">{r.overdue}T</div>
+              <div><span className={`chip ${r.overdue > 30 ? 'chip-neg' : r.overdue > 14 ? 'chip-amb' : ''}`}>{r.stage}</span></div>
+              <div className="font-mono text-right text-xs text-ink-3">{r.last.slice(5)}</div>
+            </div>
+          ))}
+        </div>
+
+        <div className="panel">
+          <div className="flex items-center justify-between px-4 hl-b" style={{ height: 44 }}>
+            <div>
+              <div className="caps">Mietende · Rollover 12M</div>
+              <div className="text-xs font-mono text-ink-3 mt-1">{LEASE_EXPIRY.length} Verträge · Passing {fmtEUR0(LEASE_EXPIRY.reduce((s,l) => s + l.rent, 0)*12)} p.a.</div>
+            </div>
+            <button className="btn btn-sm">BRIEFE →</button>
+          </div>
+          <div className="tbl-head grid-expiry">
+            <div>Obj</div><div>WE / Mieter</div><div>Endet</div>
+            <div className="text-right">Tage</div><div className="text-right">Miete</div>
+            <div className="text-right">Status</div><div className="text-right">Aktion</div>
+          </div>
+          {LEASE_EXPIRY.map(l => (
+            <div key={l.obj+l.unit} className="tbl-row grid-expiry">
+              <div className="font-mono text-acc text-xs">{l.obj}</div>
+              <div>
+                <div className="font-mono text-xs">{l.unit}</div>
+                <div className="font-mono text-xs text-ink-3 mt-1">{l.tId}</div>
+              </div>
+              <div className="font-mono text-xs">{l.endDate}</div>
+              <div className="num font-mono text-right">
+                <span className={`chip ${l.daysLeft < 120 ? 'chip-amb' : ''}`}>{l.daysLeft}T</span>
+              </div>
+              <div className="num font-mono text-right">{fmtEUR2(l.rent)}</div>
+              <div className="text-right text-xs text-ink-2">{l.action}</div>
+              <div className="text-right"><button className="btn btn-sm">→</button></div>
+            </div>
+          ))}
+        </div>
+
+        <div className="panel">
+          <div className="flex items-center justify-between px-4 hl-b" style={{ height: 44 }}>
+            <div>
+              <div className="caps">Fristen & Aktionen · {OPEN_ACTIONS.length} offen</div>
+              <div className="text-xs font-mono text-ink-3 mt-1">Nächste 30 Tage · sortiert nach Fälligkeit</div>
+            </div>
+            <button className="btn btn-sm">+ AKTION</button>
+          </div>
+          <div className="tbl-head grid-actions">
+            <div>Fällig</div><div>Obj</div><div>Typ</div><div>Aktion</div><div>Verantwortl.</div><div className="text-right">ID</div>
+          </div>
+          {OPEN_ACTIONS.map(a => (
+            <div key={a.id} className="tbl-row grid-actions row-hover">
+              <div className="font-mono text-xs">{a.due}</div>
+              <div className="font-mono text-acc text-xs">{a.obj}</div>
+              <div><span className={`chip ${a.type === 'FRIST' ? 'chip-amb' : a.type === 'CAPEX' ? 'chip-acc' : 'chip-inf'}`}>{a.type}</span></div>
+              <div className="text-xs">{a.title}</div>
+              <div className="font-mono text-xs text-ink-2">{a.owner}</div>
+              <div className="text-right font-mono text-ink-4 text-xs">{a.id}</div>
+            </div>
+          ))}
+        </div>
+
+      </div>
+    </div>
+  );
+}
+
+/* =========================================================================
+   TAB 2 — OBJEKT (mit Property-Sidebar)
+   ========================================================================= */
+
+function TabObject({ selectedProp, setSelectedProp, onOpenUnit, onOpenComms }) {
+  const units = useMemo(() => genUnits(selectedProp.code), [selectedProp.code]);
+  const leased = units.filter(u => u.status === 'VERMIETET').length;
+  const vacant = units.filter(u => u.status === 'LEER').length;
+  const notice = units.filter(u => u.status === 'KÜNDIGUNG').length;
+  const passing = units.filter(u => u.status === 'VERMIETET').reduce((s,u) => s+u.rent, 0);
+  const totalQm = units.reduce((s,u) => s+u.qm, 0);
+  const tickets = TICKETS[selectedProp.code] || TICKETS['OBJ-A'];
+  const comms = (COMMUNICATIONS[selectedProp.code] || COMMUNICATIONS['OBJ-A']).slice(0, 4);
+  const occPct = ((leased / units.length) * 100);
+
+  return (
+    <div className="p-5 grid gap-4" style={{ gridTemplateColumns:'240px 1fr' }}>
+      <PropertySidebar selectedProp={selectedProp} onSelect={setSelectedProp} />
+
+      <div className="flex-col gap-4" style={{ display:'flex' }}>
+        <div className="panel p-5">
+          <div className="flex items-start justify-between">
+            <div>
+              <div className="flex items-center gap-2 mb-3">
+                <span className="font-mono text-acc" style={{ fontSize:11, letterSpacing:'0.1em', fontWeight:600 }}>{selectedProp.code}</span>
+                <span className="chip chip-inf">{selectedProp.dist.toUpperCase()}</span>
+                <span className="chip">BJ. {selectedProp.bj}</span>
+                <EnergyBadge e={selectedProp.energy} kwh={selectedProp.energyKwh} />
+                <span className="chip chip-pos"><span className="dot-pulse" /> AKTIV</span>
+              </div>
+              <div className="h1">{selectedProp.name}</div>
+              <div className="font-mono text-ink-3 mt-1 text-xs">
+                {selectedProp.name}, 10119 Berlin · Grundbuch Blatt 4821 · WEG aufgeteilt · Eigentümer: {selectedProp.owner}
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <button className="btn">DATENRAUM ↗</button>
+              <button className="btn">EXPORT OBJEKTBERICHT</button>
+              <button className="btn btn-primary">BERICHT GENERIEREN</button>
+            </div>
+          </div>
+
+          <div className="grid gc-6 mt-5" style={{ border:'1px solid var(--border)' }}>
+            <Metric label="GAV"          value={fmtEUR0(selectedProp.gav)}     sub="Verkehrswert 2025-Q1" border />
+            <Metric label="EINHEITEN"    value={units.length.toString()}        sub={`${Math.round(totalQm)} m² gesamt`} border />
+            <Metric label="VERMIETET"    value={`${fmtNum(occPct,1)}%`}         sub={`${leased}/${units.length} WE`} tone="pos" border />
+            <Metric label="PASSING RENT" value={fmtEUR0(passing*12)}            sub={`${fmtEUR0(passing)}/Monat`} border />
+            <Metric label="ERV-GAP"      value={`+${fmtNum(selectedProp.ervGap/100,1)}%`} sub="Passing → Markt" tone="pos" border />
+            <Metric label="ENERGIE"      value={selectedProp.energy}            sub={`${selectedProp.energyKwh} kWh/m²·a`} tone={['A','B','C'].includes(selectedProp.energy) ? 'pos' : 'amb'} />
+          </div>
+        </div>
+
+        <div className="panel">
+          <div className="flex items-center justify-between px-4 hl-b" style={{ height: 44 }}>
+            <div>
+              <div className="caps">Alle Wohneinheiten · {units.length}</div>
+              <div className="text-xs font-mono text-ink-3 mt-1">
+                <span style={{ color:'var(--positive)' }}>● {leased} vermietet</span>
+                <span className="ml-2" style={{ color:'var(--negative)' }}>● {vacant} leer</span>
+                <span className="ml-2" style={{ color:'var(--amber)' }}>● {notice} Kündigung</span>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <button className="btn btn-sm">FILTER</button>
+              <button className="btn btn-sm">EXPORT</button>
+            </div>
+          </div>
+          <div className="tbl-head grid-units-full">
+            <div>WE</div><div>Etage</div><div className="text-right">m²</div><div className="text-right">Zi</div>
+            <div>Mieter</div><div className="text-right">Miete</div><div className="text-right">€/m²</div><div className="text-right">Status</div>
+          </div>
+          {units.map(u => (
+            <div key={u.n} className="tbl-row grid-units-full row-hover" onClick={() => onOpenUnit(u)}>
+              <div className="font-mono">{u.n}</div>
+              <div className="font-mono text-ink-2 text-xs">{u.floor}</div>
+              <div className="num font-mono text-right text-ink-2 text-xs">{fmtNum(u.qm,1)}</div>
+              <div className="num font-mono text-right text-ink-2 text-xs">{fmtNum(u.rooms,1)}</div>
+              <div className="font-mono text-ink-2 text-xs">{u.tId || '—'}</div>
+              <div className="num font-mono text-right">{fmtEUR2(u.rent)}</div>
+              <div className="num font-mono text-right text-ink-2 text-xs">{fmtNum(u.eurSqm,2)}</div>
+              <div className="text-right"><StatusDot v={u.status} /></div>
+            </div>
+          ))}
+        </div>
+
+        <div className="grid gap-4" style={{ gridTemplateColumns:'1fr 1fr' }}>
+          <div className="panel">
+            <div className="flex items-center justify-between px-4 hl-b" style={{ height: 44 }}>
+              <div className="caps">Offene Tickets · {tickets.filter(t => t.status !== 'GREEN').length} aktiv</div>
+              <button className="btn btn-sm">+ TICKET</button>
+            </div>
+            <div>
+              {tickets.map(t => (
+                <div key={t.id} className="flex items-center gap-3 px-4 py-3 hl-b-soft">
+                  <span className={`chip ${t.status === 'RED' ? 'chip-neg' : t.status === 'AMBER' ? 'chip-amb' : 'chip-pos'}`}>{t.status}</span>
+                  <span className="font-mono text-xs text-ink-3">{t.id}</span>
+                  <span className="font-mono text-xs text-ink-2">{t.unit}</span>
+                  <span className="flex-1 text-sm">{t.title}</span>
+                  <span className="font-mono text-xs text-ink-3">{t.age}T</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="panel">
+            <div className="flex items-center justify-between px-4 hl-b" style={{ height: 44 }}>
+              <div className="caps">Letzte Kommunikation</div>
+              <button className="btn btn-sm" onClick={onOpenComms}>ALLE ÖFFNEN →</button>
+            </div>
+            <div>
+              {comms.map(c => (
+                <div key={c.id} className="px-4 py-3 hl-b-soft">
+                  <div className="flex items-center gap-2 mb-1">
+                    <ChannelChip ch={c.channel} dir={c.direction} />
+                    <span className="font-mono text-xs text-ink-3">{c.date}</span>
+                    <span className="font-mono text-xs text-ink-2">{c.unit}</span>
+                    {c.tId && <span className="font-mono text-xs text-acc">#{c.tId}</span>}
+                  </div>
+                  <div className="text-sm">{c.subject}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* =========================================================================
+   TAB 3 — WOHNEINHEIT (Property + Unit Selector)
+   ========================================================================= */
+
+function UnitHeader({ prop, unit }) {
+  return (
+    <div className="panel p-5">
+      <div className="flex items-start justify-between">
+        <div>
+          <div className="flex items-center gap-2 mb-2">
+            <span className="font-mono text-acc" style={{ fontSize:11 }}>{prop.code} · {unit.n}</span>
+            <span className="chip">{unit.floor}</span>
+            <span className="chip">{fmtNum(unit.qm,1)} m²</span>
+            <span className="chip">{fmtNum(unit.rooms,1)} ZIMMER</span>
+            <EnergyBadge e={unit.energy} kwh={unit.energyKwh} />
+            {unit.tId  && <span className="chip chip-pos">MIETER #{unit.tId}</span>}
+            {!unit.tId && <span className="chip chip-neg">LEERSTAND</span>}
+          </div>
+          <div className="h2">Wohneinheit {unit.n} · {unit.floor}, linke Tür</div>
+          {unit.start && (
+            <div className="font-mono text-ink-3 mt-1 text-xs">
+              Mieter seit {unit.start} · Letzte Anpassung {unit.lastInc || '—'} · Mietvertrag: {unit.contract}
+            </div>
+          )}
+        </div>
+        <div className="text-right">
+          <div className="caps">Kaltmiete</div>
+          <div className="font-disp num mt-1" style={{ fontSize:28, letterSpacing:'-0.02em' }}>{fmtEUR2(unit.rent)}</div>
+          <div className="font-mono text-ink-2 mt-1 text-xs">{fmtNum(unit.eurSqm,2)} €/m² · kalt</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function RentHistory({ unit }) {
+  const all = [...RENT_HISTORY, RENT_PROJECTED];
+  const rents = all.map(r => r.rent);
+  const yMin = Math.floor(Math.min(...rents) / 50) * 50 - 50;
+  const yMax = Math.ceil(Math.max(...rents) / 50) * 50 + 50;
+  const W = 840, H = 220;
+  const padL = 50, padR = 20, padT = 20, padB = 28;
+  const innerW = W - padL - padR;
+  const innerH = H - padT - padB;
+  const x = i => padL + (i / (all.length - 1)) * innerW;
+  const y = v => padT + (1 - (v - yMin)/(yMax - yMin)) * innerH;
+  const pathActual = RENT_HISTORY.map((d, i) => `${i === 0 ? 'M' : 'L'} ${x(i)} ${y(d.rent)}`).join(' ');
+  const lastI = RENT_HISTORY.length - 1;
+  const projPath = `M ${x(lastI)} ${y(RENT_HISTORY[lastI].rent)} L ${x(lastI+1)} ${y(RENT_PROJECTED.rent)}`;
+
+  return (
+    <div className="panel p-5">
+      <div className="flex items-start justify-between mb-4">
+        <div>
+          <div className="caps mb-1">Mieten-Historie · {unit.n}</div>
+          <div className="h3">Chronologische Anpassungen mit Rechtsgrundlage</div>
+        </div>
+        <div className="flex gap-2">
+          <span className="chip chip-inf">{RENT_HISTORY.length} EVENTS</span>
+          <span className="chip">SEIT 2019</span>
+        </div>
+      </div>
+
+      <div className="bg-cream p-3" style={{ border:'1px solid var(--border)' }}>
+        <svg viewBox={`0 0 ${W} ${H}`} style={{ width:'100%', height:220, display:'block' }}>
+          {[0, 0.25, 0.5, 0.75, 1].map((t, i) => {
+            const yv = yMin + t * (yMax - yMin);
+            return (
+              <g key={i}>
+                <line x1={padL} x2={W-padR} y1={y(yv)} y2={y(yv)} stroke="#D9D3C4" strokeWidth="0.6" strokeDasharray={i === 0 ? null : '2 3'} />
+                <text x={padL-6} y={y(yv)+3} textAnchor="end" fontFamily="JetBrains Mono" fontSize="9" fill="#9A9A93">{Math.round(yv)}</text>
+              </g>
+            );
+          })}
+          {all.map((d, i) => (
+            <text key={i} x={x(i)} y={H-10} textAnchor="middle" fontFamily="JetBrains Mono" fontSize="9" fill="#6E7179">{d.date.slice(0,7)}</text>
+          ))}
+          <path d={`${pathActual} L ${x(lastI)} ${H-padB} L ${x(0)} ${H-padB} Z`} fill="rgba(138,109,59,0.08)" />
+          <path d={pathActual} fill="none" stroke="#8A6D3B" strokeWidth="1.8" />
+          <path d={projPath} fill="none" stroke="#8A6D3B" strokeWidth="1.8" strokeDasharray="5 3" opacity="0.55" />
+          {RENT_HISTORY.map((d, i) => (
+            <circle key={i} cx={x(i)} cy={y(d.rent)} r="3.5" fill="#FFFFFF" stroke="#8A6D3B" strokeWidth="1.8" />
+          ))}
+          <circle cx={x(all.length-1)} cy={y(RENT_PROJECTED.rent)} r="3.5" fill="#FFFFFF" stroke="#8A6D3B" strokeWidth="1.8" strokeDasharray="1 1" opacity="0.7" />
+          <line x1={x(lastI)} x2={x(lastI)} y1={padT} y2={H-padB} stroke="#2C4A6B" strokeWidth="0.8" strokeDasharray="3 3" opacity="0.5" />
+          <text x={x(lastI)} y={padT-5} textAnchor="middle" fontFamily="JetBrains Mono" fontSize="8.5" fill="#2C4A6B" letterSpacing="0.5">HEUTE</text>
+          <text x={x(all.length-1)} y={padT-5} textAnchor="middle" fontFamily="JetBrains Mono" fontSize="8.5" fill="#8A6D3B" letterSpacing="0.5">PROJ.</text>
+        </svg>
+      </div>
+
+      <div className="mt-4">
+        <div className="tbl-head grid-history">
+          <div>Datum</div><div>Typ</div><div className="text-right">Miete</div><div className="text-right">€/m²</div>
+          <div className="text-right">Δ%</div><div>Begründung</div><div className="text-right">Doc</div>
+        </div>
+        {RENT_HISTORY.map((r, i) => {
+          const chipCls = r.type === 'VPI-INDEXIERUNG' ? 'chip-inf' :
+                          r.type === 'MIETERWECHSEL'   ? 'chip-acc' :
+                          r.type === 'NEUVERMIETUNG'   ? 'chip-pos' :
+                          'chip-amb';
+          return (
+            <div key={i} className="tbl-row grid-history row-hover">
+              <div className="font-mono">{r.date}</div>
+              <div><span className={`chip ${chipCls}`}>{r.type}</span></div>
+              <div className="num font-mono text-right">{fmtEUR2(r.rent)}</div>
+              <div className="num font-mono text-right text-ink-2">{fmtNum(r.eurSqm,2)}</div>
+              <div className={`num font-mono text-right ${r.delta ? 'text-pos' : 'text-ink-4'}`}>
+                {r.delta ? `+${fmtNum(r.delta,2)}%` : '—'}
+              </div>
+              <div className="text-ink-2 text-xs truncate">{r.reason}</div>
+              <div className="text-right">
+                {r.doc ? <span className="chip chip-acc" style={{ padding:'1px 5px' }}>PDF</span> : <span className="text-ink-4 font-mono text-xs">—</span>}
+              </div>
+            </div>
+          );
+        })}
+        <div className="tbl-row grid-history" style={{ background:'rgba(138,109,59,0.06)' }}>
+          <div className="font-mono text-acc">{RENT_PROJECTED.date}</div>
+          <div><span className="chip chip-inf">{RENT_PROJECTED.type}</span></div>
+          <div className="num font-mono text-right text-acc">{fmtEUR2(RENT_PROJECTED.rent)}</div>
+          <div className="num font-mono text-right text-ink-2">{fmtNum(RENT_PROJECTED.eurSqm,2)}</div>
+          <div className="num font-mono text-right text-acc">+{fmtNum(RENT_PROJECTED.delta,2)}%</div>
+          <div className="text-ink-2 text-xs" style={{ fontStyle:'italic' }}>{RENT_PROJECTED.reason}</div>
+          <div className="text-right"><span className="text-ink-4 font-mono text-xs">—</span></div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function NextIncrease({ openRentModal }) {
+  return (
+    <div className="highlight p-5">
+      <div className="flex items-start justify-between mb-3">
+        <div>
+          <div className="caps mb-1" style={{ color:'var(--accent)' }}>▲ Nächste Mieterhöhung</div>
+          <div className="h3">Zwei parallel mögliche Pfade · AM-Entscheidung</div>
+        </div>
+      </div>
+
+      <div className="grid gc-3 panel" style={{ background:'var(--panel)', border:'1px solid var(--border)' }}>
+        <div className="p-4 hl-r">
+          <div className="caps mb-2">Termin · VPI-Indexierung</div>
+          <div className="font-mono text-ink" style={{ fontSize:13 }}>2026-04-01</div>
+          <div className="kpi num mt-2 text-acc">+3,2%</div>
+          <div className="font-mono num text-xs mt-1">→ {fmtEUR2(1287.94)} <span className="text-pos">(+€39,94)</span></div>
+          <div className="font-mono text-ink-3 mt-2 text-xs leading-snug">
+            Nächste nach: 2027-04-01<br/>Rechtsgrundlage: §557b BGB
+          </div>
+        </div>
+        <div className="p-4 hl-r">
+          <div className="caps mb-2">Alternativ · §558 Vergleichsmiete</div>
+          <div className="font-mono text-ink" style={{ fontSize:13 }}>Möglich ab 2025-10-01</div>
+          <div className="kpi num mt-2 text-pos">+10,8%</div>
+          <div className="font-mono num text-xs mt-1">→ {fmtEUR2(1382.70)} <span className="text-pos">(+€134,70)</span></div>
+          <div className="font-mono text-ink-3 mt-2 text-xs leading-snug">
+            Kappung 11%/3J erreicht:<br/>2029-10-01
+          </div>
+        </div>
+        <div className="p-4 flex-col" style={{ display:'flex' }}>
+          <div className="caps mb-2">Aktion</div>
+          <button onClick={() => openRentModal('vpi')} className="btn btn-primary w-full mb-2">VORBEREITEN VPI →</button>
+          <button onClick={() => openRentModal('558')} className="btn w-full">§558 PRÜFEN</button>
+          <div className="mt-auto pt-3 font-mono text-ink-3 text-xs">ENTWURF · FRISTEN · VERSAND</div>
+        </div>
+      </div>
+
+      <div className="mt-3 p-3 bg-panel flex items-start gap-2" style={{ border:'1px solid var(--border)' }}>
+        <span className="chip chip-acc" style={{ padding:'2px 6px' }}>EMPFEHLUNG</span>
+        <div className="text-sm text-ink-2 leading-relaxed">
+          Parallel §558-Verfahren prüfen — Potenzial <span className="num font-mono text-pos">+€1.136,64 p.a.</span> höher als VPI-Pfad. Kappungsgrenze aktuell zu 3,4% ausgeschöpft. Vergleichsmiete benötigt Begründung (Mietspiegel-Feld + 3 Vergleichswohnungen).
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MarketContext({ unit }) {
+  const { min, max, mean, feld, quelle } = MIETSPIEGEL;
+  const pctPos  = ((unit.eurSqm - min) / (max - min)) * 100;
+  const pctMean = ((mean - min) / (max - min)) * 100;
+  const bounded     = Math.max(2, Math.min(98, pctPos));
+  const boundedMean = Math.max(2, Math.min(98, pctMean));
+
+  return (
+    <div className="panel p-5">
+      <div className="flex items-start justify-between mb-3">
+        <div>
+          <div className="caps mb-1">Markt-Kontext · Ortsübliche Vergleichsmiete</div>
+          <div className="h3">Mietspiegel-Einordnung · Feld {feld.split('·')[0].trim()}</div>
+        </div>
+        <span className="chip chip-inf">MIETSPIEGEL 2025</span>
+      </div>
+      <div className="font-mono text-ink-2 mb-3 text-xs">{feld}</div>
+
+      <div className="relative bg-cream" style={{ height:54, border:'1px solid var(--border)', marginBottom: 28 }}>
+        <div className="absolute" style={{ left:'4%', right:'4%', top:8, bottom:8, background:'linear-gradient(90deg, rgba(44,74,107,0.12), rgba(44,74,107,0.22), rgba(44,74,107,0.12))' }} />
+        <div className="absolute" style={{ left:`calc(4% + ${boundedMean * 0.92}%)`, top:0, bottom:0 }}>
+          <div style={{ position:'absolute', top:0, bottom:0, borderLeft:'2px dashed var(--accent-2)', opacity:0.7 }} />
+          <div className="absolute font-mono text-acc2" style={{ top:-20, left:0, transform:'translateX(-50%)', fontSize:10, whiteSpace:'nowrap' }}>Ø {fmtNum(mean,2)} €/m²</div>
+        </div>
+        <div className="absolute" style={{ left:`calc(4% + ${bounded * 0.92}%)`, top:0, bottom:0 }}>
+          <div style={{ position:'absolute', top:0, bottom:0, width:2, background:'var(--accent)', left:-1 }} />
+          <div className="absolute" style={{ top:'50%', left:0, transform:'translate(-50%,-50%)', width:12, height:12, borderRadius:'50%', background:'var(--accent)', border:'2px solid #FFF', boxShadow:'0 0 0 1px var(--accent)' }} />
+          <div className="absolute font-mono text-acc" style={{ bottom:-22, left:0, transform:'translateX(-50%)', fontSize:10, whiteSpace:'nowrap', fontWeight:500 }}>IST {fmtNum(unit.eurSqm,2)} €/m²</div>
+        </div>
+        <div className="absolute font-mono text-ink-3" style={{ left:'2%', top:'50%', transform:'translateY(-50%)', fontSize:10 }}>{fmtNum(min,2)}</div>
+        <div className="absolute font-mono text-ink-3" style={{ right:'2%', top:'50%', transform:'translateY(-50%)', fontSize:10 }}>{fmtNum(max,2)}</div>
+      </div>
+
+      <div className="text-sm text-ink-2 mb-4">
+        Spanne <span className="font-mono">€{fmtNum(min,2)}</span>–<span className="font-mono">€{fmtNum(max,2)}</span>/m² · Delta zum Mittelwert:
+        <span className="font-mono text-neg ml-2">−{fmtNum(mean-unit.eurSqm,2)} €/m²</span>
+        <span className="font-mono text-ink-3 ml-2">(ungenutzte Reserve)</span>
+      </div>
+
+      <div className="hl-t pt-4">
+        <div className="caps mb-2">Vergleichswohnungen im Portfolio · gleiches Mietspiegel-Feld</div>
+        <div className="tbl-head grid-compare">
+          <div>Objekt / WE</div><div className="text-right">m²</div><div className="text-right">€/m²</div><div className="text-right">Bj.</div><div className="text-right">Lage</div>
+        </div>
+        {VERGLEICHS.map((v, i) => (
+          <div key={i} className="tbl-row grid-compare">
+            <div className="font-mono text-xs">{v.obj}</div>
+            <div className="num font-mono text-right text-ink-2">{fmtNum(v.qm,1)}</div>
+            <div className="num font-mono text-right text-acc">{fmtNum(v.eurSqm,2)}</div>
+            <div className="num font-mono text-right text-ink-2">{v.bj}</div>
+            <div className="font-mono text-right text-ink-2 text-xs">{v.lage}</div>
+          </div>
+        ))}
+      </div>
+      <div className="mt-3 font-mono text-ink-4" style={{ fontSize:9.5, fontStyle:'italic' }}>Quelle: {quelle}</div>
+    </div>
+  );
+}
+
+function MieterContact({ unit, onContact, onTicket }) {
+  if (!unit.tId) return null;
+  return (
+    <div className="panel p-5">
+      <div className="flex items-center justify-between">
+        <div>
+          <div className="caps mb-1">Kontakt Mieter · #{unit.tId}</div>
+          <div className="font-mono text-ink-2 text-xs">Anonymisierte Mieter-ID · Kommunikation über Rendium-Gateway archiviert</div>
+        </div>
+        <div className="flex gap-2">
+          <button onClick={onContact} className="btn">✉ E-MAIL</button>
+          <button className="btn">📄 BRIEF PDF</button>
+          <button className="btn">☏ TELEFON-NOTIZ</button>
+          <button onClick={onTicket} className="btn btn-primary">+ TICKET</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function UnitTimeline() {
+  const [filter, setFilter] = useState('ALLE');
+  const filtered = filter === 'ALLE' ? TIMELINE : TIMELINE.filter(t => t.kind === filter);
+  const chips = ['ALLE','MIETE','TICKET','CAPEX','SCHRIFT.','MIETER'];
+
+  return (
+    <div className="panel p-5">
+      <div className="flex items-center justify-between mb-3">
+        <div className="caps">Timeline · chronologisch</div>
+        <div className="flex gap-1">
+          {chips.map(c => (
+            <button key={c} onClick={() => setFilter(c)} className="font-mono uppercase cursor-pointer"
+                    style={{ fontSize:10, letterSpacing:'0.08em', padding:'4px 8px',
+                             border:`1px solid ${filter===c?'var(--accent)':'var(--border-strong)'}`,
+                             color: filter===c?'var(--accent)':'var(--ink-3)',
+                             background: filter===c?'#F7EFD7':'var(--panel)',
+                             borderRadius: 2 }}>
+              {c}
+            </button>
+          ))}
+        </div>
+      </div>
+      <div className="relative" style={{ paddingLeft: 24 }}>
+        <div className="absolute" style={{ left: 9, top: 8, bottom: 8, width: 1, background:'var(--border)' }} />
+        {filtered.map((e, i) => (
+          <div key={i} className="relative py-3 hl-b-soft" style={{ paddingLeft: 12 }}>
+            <div className="absolute rounded-full" style={{ left:-15, top:18, width:8, height:8, background:'var(--accent)', boxShadow:'0 0 0 3px var(--panel)' }} />
+            <div className="flex items-center gap-3">
+              <span className="font-mono text-ink-3" style={{ width: 96, fontSize:11 }}>{e.date}</span>
+              <span className="chip chip-inf" style={{ padding:'1px 6px' }}>{e.kind}</span>
+              <span className="text-ink-2 text-sm">{e.label}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function TabUnit({ selectedProp, setSelectedProp, unit, setUnit, onOpenRentModal, onOpenContact, onOpenTicket }) {
+  const units = useMemo(() => genUnits(selectedProp.code), [selectedProp.code]);
+  useEffect(() => {
+    if (!unit || !units.find(u => u.n === unit.n)) {
+      setUnit(units.find(u => u.focus) || units[0]);
+    }
+  }, [selectedProp.code]);
+  const currentUnit = unit || units.find(u => u.focus) || units[0];
+
+  return (
+    <div className="p-5 grid gap-4" style={{ gridTemplateColumns:'220px 230px 1fr' }}>
+      <PropertySidebar selectedProp={selectedProp} onSelect={(p) => { setSelectedProp(p); setUnit(null); }} />
+
+      <div className="panel">
+        <div className="flex items-center justify-between px-3 hl-b" style={{ height: 42 }}>
+          <div className="caps">{selectedProp.code} · {units.length} WE</div>
+        </div>
+        <div className="tbl-head grid-units">
+          <div>WE</div><div>Etg</div><div>Miete</div><div className="text-right">€/m²</div><div className="text-right">St.</div>
+        </div>
+        <div style={{ maxHeight: 820, overflowY:'auto' }}>
+          {units.map(u => (
+            <div key={u.n}
+                 onClick={() => setUnit(u)}
+                 className={`tbl-row grid-units row-hover ${currentUnit && currentUnit.n === u.n ? 'row-active' : ''}`}>
+              <div className="font-mono" style={{ fontSize:11.5 }}>{u.n}</div>
+              <div className="font-mono text-ink-2 text-xs">{u.floor}</div>
+              <div className="num font-mono" style={{ fontSize:11.5 }}>{fmtEUR2(u.rent)}</div>
+              <div className="num font-mono text-right text-ink-2 text-xs">{fmtNum(u.eurSqm,2)}</div>
+              <div className="text-right"><span className={`dot ${u.status==='VERMIETET'?'dot-pos':u.status==='LEER'?'dot-neg':'dot-amb'}`} /></div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="flex-col gap-4" style={{ display:'flex' }}>
+        <UnitHeader prop={selectedProp} unit={currentUnit} />
+        {currentUnit.tId && <RentHistory unit={currentUnit} />}
+        {currentUnit.tId && <NextIncrease openRentModal={onOpenRentModal} />}
+        <MarketContext unit={currentUnit} />
+        <MieterContact unit={currentUnit} onContact={onOpenContact} onTicket={onOpenTicket} />
+        <UnitTimeline />
+      </div>
+    </div>
+  );
+}
+
+/* ====================================================================
+   TAB · KOMMUNIKATION
+==================================================================== */
+function TabComms({ selectedProp, setSelectedProp }) {
+  const [filter, setFilter] = useState('ALLE');
+  const [selected, setSelected] = useState(null);
+  const all = COMMUNICATIONS[selectedProp.code] || COMMUNICATIONS['OBJ-A'];
+  const filtered = filter === 'ALLE' ? all : all.filter(c => c.channel === filter);
+  const current = selected || filtered[0];
+
+  const counts = {
+    ALLE: all.length,
+    'E-MAIL': all.filter(c => c.channel === 'E-MAIL').length,
+    BRIEF: all.filter(c => c.channel === 'BRIEF').length,
+    TELEFON: all.filter(c => c.channel === 'TELEFON').length,
+    TICKET: all.filter(c => c.channel === 'TICKET').length,
+    NOTIZ: all.filter(c => c.channel === 'NOTIZ').length,
+  };
+
+  return (
+    <div className="p-5 grid gap-4" style={{ gridTemplateColumns: '220px 360px 1fr' }}>
+      <PropertySidebar selectedProp={selectedProp} onSelect={(p) => { setSelectedProp(p); setSelected(null); }} />
+
+      <div className="panel">
+        <div className="px-3 py-3 hl-b">
+          <div className="caps mb-2">Kommunikation · {selectedProp.code}</div>
+          <div className="flex flex-wrap gap-1">
+            {['ALLE','E-MAIL','BRIEF','TELEFON','TICKET','NOTIZ'].map(f => (
+              <button key={f}
+                      onClick={() => { setFilter(f); setSelected(null); }}
+                      className={`chip ${filter === f ? 'chip-on' : ''}`}>
+                {f} <span className="text-ink-3">{counts[f]}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+        <div style={{ maxHeight: 820, overflowY: 'auto' }}>
+          {filtered.map(c => (
+            <div key={c.id}
+                 onClick={() => setSelected(c)}
+                 className={`comm-row row-hover ${current && current.id === c.id ? 'row-active' : ''}`}>
+              <div className="flex items-center justify-between mb-1">
+                <ChannelChip ch={c.channel} dir={c.direction} />
+                <div className="font-mono text-ink-3 text-xs">{c.date.slice(0,10)}</div>
+              </div>
+              <div className="text-sm mb-1" style={{ fontWeight: 500 }}>{c.subject}</div>
+              <div className="flex items-center gap-2 text-xs text-ink-2 font-mono">
+                <span>{c.unit}</span>
+                {c.tId && <span>· {c.tId}</span>}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="panel">
+        <div className="px-4 py-3 hl-b flex items-center justify-between">
+          <div className="caps">Nachricht · {current.id}</div>
+          <div className="flex gap-2">
+            <button className="btn-ghost">Antworten</button>
+            <button className="btn-ghost">Weiterleiten</button>
+            <button className="btn-ghost">Als erledigt</button>
+          </div>
+        </div>
+        <div className="p-5">
+          <div className="flex items-center gap-3 mb-3 flex-wrap">
+            <ChannelChip ch={current.channel} dir={current.direction} />
+            <div className="font-mono text-ink-3 text-xs">{current.date}</div>
+            <div className="font-mono text-ink-3 text-xs">· {current.unit}</div>
+            {current.tId && <div className="font-mono text-ink-3 text-xs">· Mieter {current.tId}</div>}
+            <div className="font-mono text-ink-3 text-xs">· {current.author}</div>
+          </div>
+          <h3 className="serif mb-3" style={{ fontSize: 20 }}>{current.subject}</h3>
+          <div className="text-ink-2" style={{ fontSize: 14, lineHeight: 1.6 }}>
+            {current.body}
+          </div>
+
+          <div className="mt-5 hl-t pt-4">
+            <div className="caps mb-3">Kontext</div>
+            <div className="grid grid-cols-3 gap-3">
+              <Field label="Objekt" val={`${selectedProp.code} · ${selectedProp.name}`} />
+              <Field label="Einheit" val={current.unit} />
+              <Field label="Kanal" val={`${current.channel} · ${current.direction}`} />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ====================================================================
+   TAB · MODERNISIERUNGEN (früher CapEx)
+==================================================================== */
+function TabCapex({ selectedProp, setSelectedProp }) {
+  const [scope, setScope] = useState('PORTFOLIO'); // PORTFOLIO | OBJEKT
+  const [statusFilter, setStatusFilter] = useState('ALLE');
+
+  const rows = scope === 'OBJEKT'
+    ? MODERNIZATIONS.filter(m => m.obj === selectedProp.code)
+    : MODERNIZATIONS;
+
+  const filtered = statusFilter === 'ALLE' ? rows : rows.filter(r => r.status === statusFilter);
+
+  const totalBudget    = rows.reduce((s, m) => s + m.budget, 0);
+  const totalSpent     = rows.reduce((s, m) => s + m.spent,  0);
+  const totalCommitted = rows.filter(m => m.status !== 'ABGESCHLOSSEN').reduce((s, m) => s + (m.budget - m.spent), 0);
+  const countActive    = rows.filter(m => m.status === 'IN UMSETZUNG').length;
+  const countDone      = rows.filter(m => m.status === 'ABGESCHLOSSEN').length;
+
+  const byKat = {};
+  rows.forEach(m => { byKat[m.kat] = (byKat[m.kat] || 0) + m.budget; });
+  const katEntries = Object.entries(byKat).sort((a, b) => b[1] - a[1]);
+
+  return (
+    <div className="p-5">
+      {/* Scope toggle */}
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <button onClick={() => setScope('PORTFOLIO')} className={`chip ${scope === 'PORTFOLIO' ? 'chip-on' : ''}`}>PORTFOLIO · 11 Objekte</button>
+          <button onClick={() => setScope('OBJEKT')}    className={`chip ${scope === 'OBJEKT'    ? 'chip-on' : ''}`}>NUR {selectedProp.code}</button>
+        </div>
+        <div className="text-xs text-ink-3 font-mono">Modernisierungen · ImmoWertV · § 71 GEG · § 559 BGB</div>
+      </div>
+
+      {/* KPI strip */}
+      <div className="panel mb-4">
+        <div className="grid" style={{ gridTemplateColumns: 'repeat(5, 1fr)' }}>
+          <Metric label="Budget gesamt"        value={fmtEUR0(totalBudget)}    sub={`${rows.length} Maßnahmen`} border />
+          <Metric label="Ausgegeben"           value={fmtEUR0(totalSpent)}     sub={`${((totalSpent/totalBudget)*100).toFixed(0)}% des Budgets`} border />
+          <Metric label="Verpflichtungen"      value={fmtEUR0(totalCommitted)} sub="noch offen" border />
+          <Metric label="In Umsetzung"         value={countActive}             sub={`${countDone} abgeschlossen`} border />
+          <Metric label="Ø Budget/Maßnahme"    value={fmtEUR0(totalBudget / Math.max(rows.length, 1))} sub="" />
+        </div>
+      </div>
+
+      {/* Split: Kategorien (left) + Modernisierungstabelle (right) */}
+      <div className="grid gap-4" style={{ gridTemplateColumns: '320px 1fr' }}>
+        <div className="panel">
+          <div className="px-4 py-3 hl-b caps">Budget nach Kategorie</div>
+          <div className="p-4 flex flex-col gap-3">
+            {katEntries.map(([kat, sum]) => {
+              const pct = (sum / totalBudget) * 100;
+              return (
+                <div key={kat}>
+                  <div className="flex items-center justify-between mb-1">
+                    <div className="font-mono text-xs">{kat}</div>
+                    <div className="font-mono text-xs text-ink-2">{fmtEUR0(sum)}</div>
+                  </div>
+                  <div className="bar"><div className="bar-fill" style={{ width: pct + '%' }} /></div>
+                </div>
+              );
+            })}
+          </div>
+          <div className="hl-t p-4">
+            <div className="caps mb-2">GEG § 71 · Heizungsgesetz</div>
+            <div className="text-xs text-ink-2" style={{ lineHeight: 1.6 }}>
+              Neu eingebaute Heizungen in Bestandsgebäuden müssen ab <span className="font-mono">2026-06-30</span>{' '}
+              zu 65% mit erneuerbaren Energien betrieben werden (Berlin &gt; 100.000 EW).
+              Relevant für <span className="font-mono">OBJ-F, OBJ-G</span>.
+            </div>
+          </div>
+        </div>
+
+        <div className="panel">
+          <div className="px-4 py-3 hl-b flex items-center justify-between">
+            <div className="caps">Maßnahmen · {filtered.length}</div>
+            <div className="flex gap-1">
+              {['ALLE','IN UMSETZUNG','AUSSCHREIBUNG','TERMINIERT','GENEHMIGUNG','PRÜFUNG','ABGESCHLOSSEN'].map(s => (
+                <button key={s}
+                        onClick={() => setStatusFilter(s)}
+                        className={`chip ${statusFilter === s ? 'chip-on' : ''}`}>
+                  {s}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="tbl-head grid-mod">
+            <div>ID</div>
+            <div>Obj</div>
+            <div>Maßnahme</div>
+            <div>Kat</div>
+            <div className="text-right">Budget</div>
+            <div className="text-right">Ausgegeben</div>
+            <div>Zeitraum</div>
+            <div>Status</div>
+            <div>Wirkung</div>
+          </div>
+          <div style={{ maxHeight: 640, overflowY: 'auto' }}>
+            {filtered.map(m => {
+              const prop = PROPERTIES.find(p => p.code === m.obj);
+              const statusTone =
+                m.status === 'ABGESCHLOSSEN' ? 'chip-pos' :
+                m.status === 'IN UMSETZUNG'  ? 'chip-on'  :
+                m.status === 'AUSSCHREIBUNG' ? 'chip-amb' :
+                m.status === 'GENEHMIGUNG'   ? 'chip-amb' : '';
+              return (
+                <div key={m.id} className="tbl-row grid-mod row-hover">
+                  <div className="font-mono text-xs">{m.id}</div>
+                  <div className="font-mono text-xs">{m.obj}</div>
+                  <div className="text-sm">
+                    {m.title}
+                    {prop && <div className="text-xs text-ink-3 font-mono">{prop.name}</div>}
+                  </div>
+                  <div><span className="chip">{m.kat}</span></div>
+                  <div className="num font-mono text-right">{fmtEUR0(m.budget)}</div>
+                  <div className="num font-mono text-right">
+                    {fmtEUR0(m.spent)}
+                    <div className="bar" style={{ marginTop: 4 }}>
+                      <div className="bar-fill" style={{ width: Math.min(100, (m.spent/m.budget)*100) + '%' }} />
+                    </div>
+                  </div>
+                  <div className="font-mono text-xs text-ink-2">{m.start.slice(0,7)}<br/>→ {m.end.slice(0,7)}</div>
+                  <div><span className={`chip ${statusTone}`}>{m.status}</span></div>
+                  <div className="font-mono text-xs">
+                    {m.impact !== '-' && <div>Energie: <b>{m.impact}</b></div>}
+                    {m.savingsKwh > 0 && <div className="text-ink-3">−{m.savingsKwh} kWh/m²</div>}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ====================================================================
+   MODALS
+==================================================================== */
+function RentModal({ onClose }) {
+  return (
+    <div className="modal-backdrop" onClick={onClose}>
+      <div className="modal" onClick={e => e.stopPropagation()}>
+        <div className="modal-head">
+          <div className="caps">Mieterhöhung vorbereiten · WE 03</div>
+          <button onClick={onClose} className="btn-ghost">Schließen</button>
+        </div>
+        <div className="p-5">
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <Field label="Aktuelle Kaltmiete"        val="1.287,90 €" />
+            <Field label="Aktuell €/m²"              val="17,24" />
+            <Field label="Mietspiegel-Feld H1 Mitte" val="11,50–18,25" />
+            <Field label="Kappung 3J / 15%"          val="noch 9,8% verfügbar" tone="pos" />
+          </div>
+          <div className="panel mb-4">
+            <div className="px-3 py-2 hl-b caps">VPI-Rechnung §557b BGB</div>
+            <div className="p-3 text-sm text-ink-2">
+              VPI letzte Anpassung 2025-04-01 · Basiswert 115,4<br/>
+              VPI aktuell (März 2026, geschätzt) · 117,8 → <b>+2,08%</b><br/>
+              Mindestfrist 15 Monate eingehalten: ✓<br/>
+              Neue Kaltmiete: <b>1.314,69 €</b> · €/m²: <b>17,60</b>
+            </div>
+          </div>
+          <div className="flex justify-end gap-2">
+            <button className="btn-ghost">Entwurf speichern</button>
+            <button className="btn-primary">Mieterhöhungsschreiben generieren</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ContactModal({ onClose }) {
+  return (
+    <div className="modal-backdrop" onClick={onClose}>
+      <div className="modal" onClick={e => e.stopPropagation()}>
+        <div className="modal-head">
+          <div className="caps">Mieter kontaktieren · M-5117</div>
+          <button onClick={onClose} className="btn-ghost">Schließen</button>
+        </div>
+        <div className="p-5">
+          <div className="grid grid-cols-4 gap-2 mb-4">
+            <button className="btn-ghost">✉ E-Mail</button>
+            <button className="btn-ghost">✎ Brief</button>
+            <button className="btn-ghost">☎ Telefon</button>
+            <button className="btn-ghost">≡ Notiz</button>
+          </div>
+          <label className="caps text-ink-3 block mb-2">Betreff</label>
+          <input className="inp mb-3" defaultValue="Terminabstimmung Strangtausch KW/WW" />
+          <label className="caps text-ink-3 block mb-2">Nachricht</label>
+          <textarea className="inp" rows={6} defaultValue="Sehr geehrter Herr …," />
+          <div className="flex justify-end gap-2 mt-4">
+            <button className="btn-ghost">Entwurf speichern</button>
+            <button className="btn-primary">Senden</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function TicketModal({ onClose }) {
+  return (
+    <div className="modal-backdrop" onClick={onClose}>
+      <div className="modal" onClick={e => e.stopPropagation()}>
+        <div className="modal-head">
+          <div className="caps">Ticket anlegen · WE 03</div>
+          <button onClick={onClose} className="btn-ghost">Schließen</button>
+        </div>
+        <div className="p-5">
+          <div className="grid grid-cols-2 gap-3 mb-3">
+            <div>
+              <label className="caps text-ink-3 block mb-2">Kategorie</label>
+              <select className="inp">
+                <option>Sanitär</option>
+                <option>Elektro</option>
+                <option>Heizung</option>
+                <option>Sonstiges</option>
+              </select>
+            </div>
+            <div>
+              <label className="caps text-ink-3 block mb-2">Priorität</label>
+              <select className="inp">
+                <option>NORMAL</option>
+                <option>AMBER</option>
+                <option>RED</option>
+              </select>
+            </div>
+          </div>
+          <label className="caps text-ink-3 block mb-2">Kurzbeschreibung</label>
+          <input className="inp mb-3" placeholder="z.B. Wasserhahn tropft …" />
+          <label className="caps text-ink-3 block mb-2">Dienstleister</label>
+          <select className="inp">
+            <option>Sanitärbetrieb Kasper</option>
+            <option>Glaserei Schütze</option>
+            <option>Elektro Wegner</option>
+          </select>
+          <div className="flex justify-end gap-2 mt-4">
+            <button className="btn-ghost">Abbrechen</button>
+            <button className="btn-primary">Ticket öffnen</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ====================================================================
+   APP
+==================================================================== */
+function App() {
+  const [tab, setTab] = useState('PORTFOLIO');
+  const [selectedProp, setSelectedProp] = useState(PROPERTIES[0]);
+  const [unit, setUnit] = useState(null);
+  const [rentModal, setRentModal] = useState(false);
+  const [contactModal, setContactModal] = useState(false);
+  const [ticketModal, setTicketModal] = useState(false);
+
+  // compute crumbs
+  const crumbs = [];
+  crumbs.push('DEMO');
+  if (tab === 'PORTFOLIO') crumbs.push('PORTFOLIO');
+  if (tab === 'OBJEKT')        crumbs.push(selectedProp.code, selectedProp.dist.toUpperCase());
+  if (tab === 'WOHNEINHEIT') {
+    crumbs.push(selectedProp.code, selectedProp.dist.toUpperCase());
+    if (unit) crumbs.push(unit.n);
+  }
+  if (tab === 'KOMMUNIKATION') crumbs.push(selectedProp.code, 'KOMMUNIKATION');
+  if (tab === 'CAPEX')         crumbs.push('MODERNISIERUNGEN');
+
+  return (
+    <>
+      <TopHeader tab={tab} setTab={setTab} crumbs={crumbs} />
+
+      {tab === 'PORTFOLIO' && (
+        <TabPortfolio onOpenProperty={(p) => { setSelectedProp(p); setTab('OBJEKT'); }} />
+      )}
+
+      {tab === 'OBJEKT' && (
+        <TabObject
+          selectedProp={selectedProp}
+          setSelectedProp={setSelectedProp}
+          onOpenUnit={(u) => { setUnit(u); setTab('WOHNEINHEIT'); }}
+          onOpenComms={() => setTab('KOMMUNIKATION')}
+        />
+      )}
+
+      {tab === 'WOHNEINHEIT' && (
+        <TabUnit
+          selectedProp={selectedProp}
+          setSelectedProp={setSelectedProp}
+          unit={unit}
+          setUnit={setUnit}
+          onOpenRentModal={() => setRentModal(true)}
+          onOpenContact={() => setContactModal(true)}
+          onOpenTicket={() => setTicketModal(true)}
+        />
+      )}
+
+      {tab === 'KOMMUNIKATION' && (
+        <TabComms selectedProp={selectedProp} setSelectedProp={setSelectedProp} />
+      )}
+
+      {tab === 'CAPEX' && (
+        <TabCapex selectedProp={selectedProp} setSelectedProp={setSelectedProp} />
+      )}
+
+      <div className="footer">
+        <div className="footer-brand">
+          <strong>Rendium</strong> <span>· ASSET MANAGEMENT</span>
+        </div>
+        <div>⌘K Suche · ⌘/ Hilfe · v0.5-demo</div>
+      </div>
+
+      {rentModal    && <RentModal    onClose={() => setRentModal(false)} />}
+      {contactModal && <ContactModal onClose={() => setContactModal(false)} />}
+      {ticketModal  && <TicketModal  onClose={() => setTicketModal(false)} />}
+    </>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+</script>
+</body>
+</html>
