@@ -517,573 +517,185 @@ textarea.inp { font-family: 'Inter Tight', sans-serif; line-height: 1.5; resize:
   box-shadow: 0 2px 8px rgba(46,111,230,0.35);
 }
 
-/* ============ MOBILE SPLASH (≤768px) ============ */
-.mobile-splash { display: none; }
+/* ============ MOBILE RESPONSIVE (≤768px) ============ */
+/* Defaults: mobile-only elements hidden on desktop */
+.mobile-notice-bar { display: none; }
+.rendium-mobile-tabs-select { display: none; }
 
 @media (max-width: 768px) {
-  body {
-    overflow: hidden;
-  }
-  #root {
-    display: none;
-  }
-  .mobile-splash {
+  /* Notice bar — sticky at very top, dismissable */
+  .mobile-notice-bar {
+    position: sticky;
+    top: 0;
+    z-index: 31;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    text-align: center;
-    position: fixed;
-    inset: 0;
-    background: #0C1A2E;
-    padding: 48px 24px;
-    z-index: 9999;
-    overflow-y: auto;
-  }
-  .mobile-splash__brand-group {
-    margin-bottom: 56px;
-  }
-  .mobile-splash__brand {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-size: 28px;
-    font-weight: 700;
+    gap: 8px;
+    background: linear-gradient(90deg, #2E6FE6 0%, #4F7FFF 100%);
     color: #FFFFFF;
-    letter-spacing: -0.01em;
-    line-height: 1;
-  }
-  .mobile-splash__tagline {
-    font-family: 'Geist Mono', 'JetBrains Mono', ui-monospace, monospace;
-    font-size: 10px;
-    letter-spacing: 0.24em;
-    color: rgba(255,255,255,0.6);
-    text-transform: uppercase;
-    margin-top: 10px;
-    font-weight: 500;
-  }
-  .mobile-splash__headline {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-style: italic;
-    font-size: 20px;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 11px;
     font-weight: 400;
-    color: #FFFFFF;
-    line-height: 1.3;
-    margin: 0 0 18px;
-    max-width: 320px;
-  }
-  .mobile-splash__body {
-    font-family: 'DM Sans', system-ui, sans-serif;
-    font-size: 14px;
-    font-weight: 400;
-    color: rgba(255,255,255,0.7);
-    line-height: 1.6;
-    max-width: 340px;
-    margin: 0 0 40px;
-  }
-  .mobile-splash__qr {
-    width: 200px;
-    height: 200px;
-    display: block;
-    border-radius: 4px;
-    border: 1px solid rgba(255,255,255,0.06);
-    background: #0C1A2E;
-  }
-  .mobile-splash__url {
-    font-family: 'JetBrains Mono', ui-monospace, monospace;
-    font-size: 12px;
-    color: rgba(255,255,255,0.5);
-    margin-top: 14px;
-    letter-spacing: 0.02em;
-  }
-  .mobile-splash__override {
-    margin-top: 56px;
-    font-family: 'DM Sans', system-ui, sans-serif;
-    font-size: 11px;
-    color: rgba(255,255,255,0.4);
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    background: none;
-    border: none;
-    padding: 8px 16px;
-    cursor: pointer;
-    letter-spacing: 0.02em;
-  }
-  .mobile-splash__override:hover,
-  .mobile-splash__override:focus-visible {
-    color: rgba(255,255,255,0.75);
-    outline: none;
-  }
-
-  /* === NEW MOBILE EXPERIENCE: hero + features + preview + cta === */
-  .mobile-splash {
-    align-items: stretch;
-    justify-content: flex-start;
-    text-align: left;
-    padding: 0;
-    -webkit-overflow-scrolling: touch;
-  }
-  .mob-hero {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 48px 24px 72px;
+    line-height: 1.35;
+    padding: 7px 14px;
     text-align: center;
-    position: relative;
-    gap: 32px;
   }
-  .mob-hero .mobile-splash__brand-group {
-    margin-bottom: 0;
-  }
-  .mob-hero-intro {
-    max-width: 340px;
-  }
-  .mob-hero .mobile-splash__headline {
-    font-size: 22px;
-    margin: 0 auto 14px;
-    max-width: 320px;
-  }
-  .mob-hero .mobile-splash__body {
-    font-size: 14px;
-    color: rgba(255,255,255,0.7);
-    line-height: 1.55;
-    margin: 0 auto;
-    max-width: 320px;
-  }
-  .mob-qr-wrap {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-  }
-  .mob-qr-wrap .mobile-splash__qr {
-    width: 176px;
-    height: 176px;
-  }
-  .mob-qr-wrap .mobile-splash__url {
-    font-family: 'JetBrains Mono', ui-monospace, monospace;
-    font-size: 11px;
-    color: rgba(255,255,255,0.5);
-    margin-top: 0;
-    letter-spacing: 0.02em;
-  }
-  .mob-scroll-hint {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-  }
-  .mob-arrow {
-    font-size: 16px;
-    line-height: 1;
-    color: rgba(255,255,255,0.45);
-    animation: mob-pulse 1.8s ease-in-out infinite;
-  }
-  .mob-scroll-label {
-    font-family: 'Geist Mono', 'JetBrains Mono', ui-monospace, monospace;
-    font-size: 9px;
-    letter-spacing: 0.24em;
-    color: rgba(255,255,255,0.4);
-    text-transform: uppercase;
-  }
-  @keyframes mob-pulse {
-    0%, 100% { transform: translateY(0); opacity: 0.45; }
-    50% { transform: translateY(5px); opacity: 0.85; }
-  }
-  .mob-section {
-    padding: 48px 24px 16px;
-    border-top: 1px solid rgba(255,255,255,0.06);
-  }
-  .mob-section__head {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-size: 20px;
-    font-weight: 500;
-    color: #FFFFFF;
-    letter-spacing: -0.01em;
-    line-height: 1.2;
-    margin: 0 0 20px;
-  }
-  .mob-preview .mob-section__head {
-    font-size: 18px;
-  }
-  .mob-card {
-    border: 1px solid rgba(79,127,255,0.15);
-    background: rgba(79,127,255,0.04);
-    border-radius: 6px;
-    padding: 20px;
-    margin-bottom: 14px;
-  }
-  .mob-feature__icon {
-    font-size: 18px;
-    color: #4F7FFF;
-    line-height: 1;
-    margin-bottom: 12px;
-  }
-  .mob-feature__title {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-size: 16px;
-    font-weight: 500;
-    color: #FFFFFF;
-    letter-spacing: -0.005em;
-    line-height: 1.25;
-    margin: 0 0 8px;
-  }
-  .mob-feature__body {
-    font-family: 'DM Sans', system-ui, sans-serif;
-    font-size: 13px;
-    color: rgba(255,255,255,0.65);
-    line-height: 1.55;
-    margin: 0;
-  }
-  .mob-preview-card {
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(79,127,255,0.12);
-    border-radius: 6px;
-    padding: 16px;
-    margin-bottom: 12px;
-    overflow: hidden;
-  }
-  .mob-chip {
-    display: inline-block;
-    font-family: 'Geist Mono', 'JetBrains Mono', ui-monospace, monospace;
-    font-size: 9px;
-    letter-spacing: 0.18em;
-    color: #4F7FFF;
-    padding: 3px 8px;
-    border: 1px solid rgba(79,127,255,0.3);
-    border-radius: 3px;
-    text-transform: uppercase;
-    margin-bottom: 10px;
-  }
-  .mob-preview-card__title {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-size: 15px;
-    font-weight: 500;
-    color: #FFFFFF;
-    letter-spacing: -0.005em;
-    line-height: 1.25;
-    margin: 0 0 12px;
-  }
-  .mob-kpi-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px 16px;
-    margin-bottom: 14px;
-  }
-  .mob-kpi__label {
-    font-family: 'Geist Mono', 'JetBrains Mono', ui-monospace, monospace;
-    font-size: 9px;
-    letter-spacing: 0.12em;
-    color: rgba(255,255,255,0.5);
-    text-transform: uppercase;
-    margin-bottom: 4px;
-    line-height: 1;
-  }
-  .mob-kpi__value {
-    font-family: 'DM Sans', system-ui, sans-serif;
-    font-size: 12px;
-    color: rgba(255,255,255,0.85);
-    line-height: 1.3;
-  }
-  .mob-preview-card__caption {
-    font-family: 'DM Sans', system-ui, sans-serif;
-    font-size: 11px;
-    color: rgba(255,255,255,0.5);
-    line-height: 1.5;
-    margin: 0;
-  }
-  .mob-preview-card__desc {
-    font-family: 'DM Sans', system-ui, sans-serif;
-    font-size: 12px;
-    color: rgba(255,255,255,0.7);
-    line-height: 1.55;
-    margin: 0 0 12px;
-  }
-  .mob-timeline {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    margin-top: 6px;
-  }
-  .mob-timeline__dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #4F7FFF;
-    flex-shrink: 0;
-  }
-  .mob-timeline__dot--pulse {
-    animation: mob-dot-pulse 1.6s ease-in-out infinite;
-  }
-  @keyframes mob-dot-pulse {
-    0%, 100% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.45); opacity: 0.55; }
-  }
-  .mob-timeline__line {
+  .mobile-notice-bar__text {
     flex: 1;
-    height: 1px;
-    background: rgba(79,127,255,0.3);
-  }
-  .mob-progress {
-    margin-top: 4px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .mob-progress__row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .mob-progress__label {
-    font-family: 'Geist Mono', 'JetBrains Mono', ui-monospace, monospace;
-    font-size: 9px;
-    letter-spacing: 0.12em;
-    color: rgba(255,255,255,0.4);
-    text-transform: uppercase;
-    width: 54px;
-    flex-shrink: 0;
-  }
-  .mob-progress__track {
-    flex: 1;
-    height: 4px;
-    background: rgba(255,255,255,0.08);
-    border-radius: 2px;
-    overflow: hidden;
-  }
-  .mob-progress__fill {
-    height: 100%;
-    background: linear-gradient(90deg, #4F7FFF 0%, #2E6FE6 100%);
-    border-radius: 2px;
-  }
-  .mob-cta {
-    padding: 48px 24px 20px;
-    border-top: 1px solid rgba(255,255,255,0.06);
-  }
-  .mob-cta__headline {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-size: 18px;
-    font-weight: 500;
-    color: #FFFFFF;
-    letter-spacing: -0.005em;
-    line-height: 1.3;
-    margin: 0 0 12px;
-  }
-  .mob-cta__body {
-    font-family: 'DM Sans', system-ui, sans-serif;
-    font-size: 13px;
-    color: rgba(255,255,255,0.7);
-    line-height: 1.55;
-    margin: 0 0 22px;
-  }
-  .mob-cta__button {
-    display: block;
-    width: 100%;
-    box-sizing: border-box;
-    background: linear-gradient(135deg, #4F7FFF 0%, #2E6FE6 100%);
-    color: #FFFFFF;
-    font-family: 'Playfair Display', Georgia, serif;
-    font-size: 14px;
-    font-weight: 500;
-    padding: 14px 28px;
-    border-radius: 4px;
-    text-align: center;
-    text-decoration: none;
-    border: none;
     letter-spacing: 0.01em;
   }
-  .mob-cta__aux {
-    margin-top: 22px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 18px;
-  }
-  .mob-cta__link {
-    font-family: 'JetBrains Mono', ui-monospace, monospace;
-    font-size: 11px;
-    color: rgba(255,255,255,0.4);
-    text-decoration: underline;
-    text-underline-offset: 3px;
+  .mobile-notice-bar__close {
     background: none;
     border: none;
-    padding: 0;
+    color: rgba(255,255,255,0.85);
+    font-size: 18px;
+    line-height: 1;
     cursor: pointer;
-    letter-spacing: 0.02em;
+    padding: 2px 6px;
+    margin-right: -4px;
+    font-weight: 300;
+    flex-shrink: 0;
   }
-  .mob-footer {
-    padding: 20px 24px 36px;
-    font-family: 'Geist Mono', 'JetBrains Mono', ui-monospace, monospace;
-    font-size: 9px;
+  .mobile-notice-bar__close:hover { color: #FFFFFF; }
+
+  /* Header below notice bar (offset by notice height ~32px) */
+  .rendium-header { top: 32px; }
+  body.notice-dismissed .rendium-header { top: 0; }
+
+  .rendium-header-inner {
+    padding: 0 12px !important;
+    gap: 8px;
+    height: 56px !important;
+  }
+  .rendium-header-left {
+    gap: 8px !important;
+    min-width: 0;
+  }
+  .rendium-logo { padding-right: 10px; margin-right: 0; }
+  .rendium-logo-wordmark { font-size: 17px; }
+  .rendium-logo-sub { font-size: 7px; letter-spacing: 0.2em; margin-top: 3px; }
+  .rendium-crumbs { display: none !important; }
+  .rendium-tabs-desktop { display: none !important; }
+  .rendium-header-right { display: none !important; }
+
+  /* Mobile-only tabs select (replaces horizontal nav) */
+  .rendium-mobile-tabs-select {
+    display: block;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background: rgba(255,255,255,0.08);
+    color: #F8F6F2;
+    border: 1px solid rgba(248,246,242,0.18);
+    border-radius: 3px;
+    padding: 7px 26px 7px 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
     letter-spacing: 0.08em;
-    color: rgba(255,255,255,0.3);
-    line-height: 1.6;
+    text-transform: uppercase;
+    font-weight: 500;
+    cursor: pointer;
+    width: auto;
+    max-width: 170px;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23F8F6F2' stroke-width='1.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 9px;
+  }
+  .rendium-mobile-tabs-select option {
+    background: #0C1A2E;
+    color: #F8F6F2;
   }
 
-  body.show-anyway {
-    overflow-x: scroll;
-    overflow-y: auto;
+  /* ===== LAYOUT: collapse grids to single column ===== */
+  /* 6-col metric strip → 2-col on mobile */
+  .grid.gc-6 {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
   }
-  body.show-anyway #root {
-    display: block;
+  .grid.gc-6 > .panel { padding: 12px !important; }
+  .grid.gc-6 .kpi { font-size: 16px !important; line-height: 1.2 !important; }
+  .grid.gc-6 > div[style*="border-right"] { border-right: none !important; border-bottom: 1px solid var(--border); }
+
+  /* 2-col & 3-col side-by-side grids → stack to single column */
+  [style*="5fr 7fr"],
+  [style*="240px 1fr"],
+  [style*="1fr 1fr"],
+  [style*="220px 230px 1fr"],
+  [style*="220px 360px 1fr"],
+  [style*="320px 1fr"] {
+    grid-template-columns: 1fr !important;
   }
-  body.show-anyway .mobile-splash {
-    display: none;
+  /* 5-col grid (e.g. capex milestones) → 2 cols */
+  [style*="repeat(5, 1fr)"] {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  /* Page padding */
+  .p-5 { padding: 12px !important; }
+
+  /* Panels: allow wide tables to scroll horizontally */
+  .panel { overflow-x: auto; }
+
+  /* Wide tables keep column widths and force panel to scroll horizontally.
+     Only grid-* classes get min-width; sidebar inline-style rows fit natively. */
+  .grid-props     { min-width: 640px; }
+  .grid-units-full{ min-width: 600px; }
+  .grid-history   { min-width: 620px; }
+  .grid-mod       { min-width: 780px; }
+  .grid-comms     { min-width: 580px; }
+  .grid-compare   { min-width: 420px; }
+  .grid-expiry    { min-width: 620px; }
+  .grid-vacancy   { min-width: 580px; }
+  .grid-collect   { min-width: 640px; }
+  .grid-actions   { min-width: 520px; }
+
+  /* Panel header bar (caps + buttons) inside overflow panel should not scroll */
+  .panel > .flex.items-center.justify-between { flex-wrap: wrap; gap: 8px; min-width: 0; }
+
+  /* Property sidebar (in Objekt tab) on mobile: collapse height */
+  .panel [style*="maxHeight: 820"],
+  .panel [style*="max-height: 820"] { max-height: 220px !important; }
+
+  /* Headings tighter */
+  .h1 { font-size: 22px !important; line-height: 1.15 !important; }
+  .h2 { font-size: 18px !important; line-height: 1.2 !important; }
+  .h3 { font-size: 15px !important; }
+
+  /* PassingVsERV: compress bars so they fit */
+  .panel .flex.items-center.gap-3.text-sm > span:nth-child(2) { display: none; }
+  .panel .flex.items-center.gap-3.text-sm > span:first-child { width: 52px !important; font-size: 10px !important; }
+
+  /* Modal: reduce backdrop padding so modal can be near-full width */
+  .modal-backdrop { padding: 10px !important; }
+  .modal { max-height: 92vh; overflow-y: auto; }
+  .modal .grid.grid-cols-4 { grid-template-columns: 1fr 1fr !important; }
+
+  /* Legal pages (Impressum / Datenschutz) */
+  .legal-topbar { padding: 10px 14px !important; }
+  .legal-topbar .btn-ghost { padding: 4px 10px !important; font-size: 10.5px !important; }
+  .legal-brand { font-size: 15px !important; }
+  .legal-content { padding: 28px 16px 60px !important; }
+  .legal-content h1 { font-size: 28px !important; line-height: 1.1 !important; }
+  .legal-content h2 { font-size: 18px !important; margin: 28px 0 10px !important; }
+
+  /* Footer of main app */
+  .footer {
+    padding: 10px 14px !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 6px !important;
+    font-size: 8.5px !important;
   }
 }
 
 </style>
 </head>
 <body>
-<div class="mobile-splash">
-  <!-- SECTION 1 — HERO -->
-  <section class="mob-hero">
-    <div class="mobile-splash__brand-group">
-      <div class="mobile-splash__brand">RENDIUM</div>
-      <div class="mobile-splash__tagline">ASSET MANAGEMENT</div>
-    </div>
-    <div class="mob-hero-intro">
-      <p class="mobile-splash__headline">Institutionelles Asset Management. Interaktiv. Digital.</p>
-      <p class="mobile-splash__body">Die Plattform für Bestandshalter, Family Offices und Property Manager, die ihr Portfolio professionell im Griff haben wollen.</p>
-    </div>
-    <div class="mob-qr-wrap">
-      <img class="mobile-splash__qr" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://demo.rendium.ai&bgcolor=0C1A2E&color=F8F6F2" alt="QR-Code zu demo.rendium.ai" width="176" height="176" />
-      <div class="mobile-splash__url">Scanne, um auf dem Desktop zu öffnen</div>
-    </div>
-    <div class="mob-scroll-hint" aria-hidden="true">
-      <div class="mob-arrow">↓</div>
-      <div class="mob-scroll-label">Weiter</div>
-    </div>
-  </section>
-
-  <!-- SECTION 2 — FEATURES -->
-  <section class="mob-section mob-features">
-    <h2 class="mob-section__head">Was die Plattform kann</h2>
-
-    <article class="mob-card">
-      <div class="mob-feature__icon">◆</div>
-      <h3 class="mob-feature__title">Automatisierte Mieterhöhungen</h3>
-      <p class="mob-feature__body">VPI §557b, Mietspiegel-Abgleich, Kappungsprüfung. Rechtssicher in Sekunden, inkl. PDF-Export.</p>
-    </article>
-
-    <article class="mob-card">
-      <div class="mob-feature__icon">▲</div>
-      <h3 class="mob-feature__title">Lückenlose Historie</h3>
-      <p class="mob-feature__body">Jede Mietanpassung, jede Kommunikation, jeder Beleg — pro Einheit und Mieter. Audit-ready.</p>
-    </article>
-
-    <article class="mob-card">
-      <div class="mob-feature__icon">●</div>
-      <h3 class="mob-feature__title">Kommunikations-Log</h3>
-      <p class="mob-feature__body">E-Mail, Brief, Telefon, Tickets, Notizen. Zentral gebündelt. Keine Informationsverluste bei Team-Übergaben.</p>
-    </article>
-
-    <article class="mob-card">
-      <div class="mob-feature__icon">■</div>
-      <h3 class="mob-feature__title">Leerstand &amp; Auslauf</h3>
-      <p class="mob-feature__body">Vacancy-Aging und Vertragsauslauf-Monitoring mit automatischer Frühwarnung.</p>
-    </article>
-
-    <article class="mob-card">
-      <div class="mob-feature__icon">◐</div>
-      <h3 class="mob-feature__title">Modernisierungs-Cockpit</h3>
-      <p class="mob-feature__body">Budget-Tracking, GEG §71 Heizungsgesetz, §559 BGB Modernisierungsumlage.</p>
-    </article>
-
-    <article class="mob-card">
-      <div class="mob-feature__icon">◑</div>
-      <h3 class="mob-feature__title">Energieeffizienz-Tracking</h3>
-      <p class="mob-feature__body">A–G-Klassen je Einheit und Objekt. Relevant für GEG-Compliance und Investor-Reporting.</p>
-    </article>
-  </section>
-
-  <!-- SECTION 3 — VISUAL PREVIEW -->
-  <section class="mob-section mob-preview">
-    <h2 class="mob-section__head">Einblick in die Plattform</h2>
-
-    <article class="mob-preview-card">
-      <div class="mob-chip">Portfolio</div>
-      <h3 class="mob-preview-card__title">11 Objekte · 284 Einheiten</h3>
-      <div class="mob-kpi-grid">
-        <div>
-          <div class="mob-kpi__label">GAV</div>
-          <div class="mob-kpi__value">512,8 Mio €</div>
-        </div>
-        <div>
-          <div class="mob-kpi__label">Vermietung</div>
-          <div class="mob-kpi__value">96,2%</div>
-        </div>
-        <div>
-          <div class="mob-kpi__label">Rent-Collection</div>
-          <div class="mob-kpi__value">98,4%</div>
-        </div>
-        <div>
-          <div class="mob-kpi__label">WALT</div>
-          <div class="mob-kpi__value">3,8 J</div>
-        </div>
-      </div>
-      <p class="mob-preview-card__caption">Geographischer Footprint auf der interaktiven Berlin-Karte</p>
-    </article>
-
-    <article class="mob-preview-card">
-      <div class="mob-chip">Mieten-Historie</div>
-      <h3 class="mob-preview-card__title">WE 03 · 1.287,90 € Kaltmiete</h3>
-      <p class="mob-preview-card__desc">7 dokumentierte Anpassungen seit 2019 — VPI-Indexierung, Mietpreisbremse, Mieterwechsel. Jede Anpassung mit Rechtsgrundlage und Beleg.</p>
-      <div class="mob-timeline" aria-hidden="true">
-        <div class="mob-timeline__dot"></div>
-        <div class="mob-timeline__line"></div>
-        <div class="mob-timeline__dot"></div>
-        <div class="mob-timeline__line"></div>
-        <div class="mob-timeline__dot"></div>
-        <div class="mob-timeline__line"></div>
-        <div class="mob-timeline__dot"></div>
-        <div class="mob-timeline__line"></div>
-        <div class="mob-timeline__dot"></div>
-        <div class="mob-timeline__line"></div>
-        <div class="mob-timeline__dot"></div>
-        <div class="mob-timeline__line"></div>
-        <div class="mob-timeline__dot mob-timeline__dot--pulse"></div>
-      </div>
-    </article>
-
-    <article class="mob-preview-card">
-      <div class="mob-chip">Modernisierungen</div>
-      <h3 class="mob-preview-card__title">8 Maßnahmen · 1,70 Mio € Budget</h3>
-      <p class="mob-preview-card__desc">Von Heizungstausch §71 GEG bis Fassadendämmung. Status-Tracking, Budget-Controlling, Energieeffizienz-Impact.</p>
-      <div class="mob-progress" aria-hidden="true">
-        <div class="mob-progress__row">
-          <div class="mob-progress__label">Heizung</div>
-          <div class="mob-progress__track"><div class="mob-progress__fill" style="width:30%"></div></div>
-        </div>
-        <div class="mob-progress__row">
-          <div class="mob-progress__label">Fenster</div>
-          <div class="mob-progress__track"><div class="mob-progress__fill" style="width:68%"></div></div>
-        </div>
-        <div class="mob-progress__row">
-          <div class="mob-progress__label">Sanitär</div>
-          <div class="mob-progress__track"><div class="mob-progress__fill" style="width:100%"></div></div>
-        </div>
-      </div>
-    </article>
-  </section>
-
-  <!-- SECTION 4 — CTA & FOOTER -->
-  <section class="mob-cta">
-    <h2 class="mob-cta__headline">Bereit für eine Demo?</h2>
-    <p class="mob-cta__body">Simon Tozman, Geschäftsführer, zeigt Ihnen die Plattform persönlich — 30 Minuten, live, auf Ihre Portfoliodaten angepasst.</p>
-    <a class="mob-cta__button" href="mailto:info@rendium.ai?subject=Demo-Anfrage%20Rendium%20Asset%20Management">Gespräch anfragen →</a>
-    <div class="mob-cta__aux">
-      <a class="mob-cta__link" href="#" onclick="event.preventDefault();document.body.classList.add('show-anyway');setTimeout(function(){var el=Array.from(document.querySelectorAll('a')).find(function(a){return a.textContent.trim()==='IMPRESSUM';});if(el){el.click();el.scrollIntoView({behavior:'smooth',block:'center'});}},250);">Impressum</a>
-      <button class="mob-cta__link" type="button" onclick="document.body.classList.add('show-anyway');">Desktop-Ansicht →</button>
-    </div>
-  </section>
-
-  <footer class="mob-footer">
-    © 2026 SIT Operations GmbH · Rendium ist eine Marke der SIT Operations GmbH
-  </footer>
+<div class="mobile-notice-bar" id="mobile-notice-bar">
+  <span class="mobile-notice-bar__text">📱 Mobile-Version in Entwicklung — beste Darstellung aktuell am Desktop</span>
+  <button class="mobile-notice-bar__close" type="button" aria-label="Hinweis schließen" onclick="var b=document.getElementById('mobile-notice-bar');if(b){b.style.display='none';}document.body.classList.add('notice-dismissed');">×</button>
 </div>
 <div id="root"></div>
 
@@ -1279,8 +891,8 @@ function TopHeader({ tab, setTab, crumbs }) {
   ];
   return (
     <header className="rendium-header">
-      <div className="flex items-center justify-between px-5" style={{ height: 60 }}>
-        <div className="flex items-center gap-5">
+      <div className="flex items-center justify-between px-5 rendium-header-inner" style={{ height: 60 }}>
+        <div className="flex items-center gap-5 rendium-header-left">
           <div className="rendium-logo">
             <div className="rendium-logo-wordmark">RENDIUM</div>
             <div className="rendium-logo-sub">ASSET MANAGEMENT</div>
@@ -1294,7 +906,7 @@ function TopHeader({ tab, setTab, crumbs }) {
             ))}
           </div>
         </div>
-        <nav className="flex items-center">
+        <nav className="flex items-center rendium-tabs-desktop">
           {tabs.map(t => (
             <button key={t.id} onClick={() => setTab(t.id)}
                     className={`rendium-tab ${tab === t.id ? 'rendium-tab-active' : ''}`}>
@@ -1302,7 +914,16 @@ function TopHeader({ tab, setTab, crumbs }) {
             </button>
           ))}
         </nav>
-        <div className="flex items-center gap-3">
+        <select
+          className="rendium-mobile-tabs-select"
+          value={tab}
+          onChange={(e) => setTab(e.target.value)}
+          aria-label="Bereich wählen">
+          {tabs.map(t => (
+            <option key={t.id} value={t.id}>{t.label}</option>
+          ))}
+        </select>
+        <div className="flex items-center gap-3 rendium-header-right">
           <div className="flex items-center gap-2 font-mono" style={{ fontSize: 10, letterSpacing:'0.15em', color:'rgba(248,246,242,0.55)' }}>
             <span className="dot-pulse-light" /> LIVE
           </div>
@@ -2569,14 +2190,14 @@ function LegalLayout({ title, onClose, children }) {
       overflowY: 'auto',
     }}>
       {/* Slim top bar */}
-      <div style={{
+      <div className="legal-topbar" style={{
         position: 'sticky', top: 0, zIndex: 10,
         background: 'var(--panel-2)',
         borderBottom: '1px solid var(--border)',
         padding: '14px 40px',
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
       }}>
-        <div style={{
+        <div className="legal-brand" style={{
           fontFamily: "'Playfair Display', serif",
           fontWeight: 600, fontSize: 18,
           letterSpacing: '-0.01em', color: 'var(--ink)',
@@ -2593,7 +2214,7 @@ function LegalLayout({ title, onClose, children }) {
       </div>
 
       {/* Content */}
-      <div style={{
+      <div className="legal-content" style={{
         maxWidth: 780,
         margin: '0 auto',
         padding: '56px 40px 80px',
