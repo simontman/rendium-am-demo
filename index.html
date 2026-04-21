@@ -618,7 +618,17 @@ textarea.inp { font-family: 'Inter Tight', sans-serif; line-height: 1.5; resize:
   .grid.gc-6 .kpi { font-size: 16px !important; line-height: 1.2 !important; }
   .grid.gc-6 > div[style*="border-right"] { border-right: none !important; border-bottom: 1px solid var(--border); }
 
-  /* 2-col & 3-col side-by-side grids → stack to single column */
+  /* Utility grid classes (gc-3/4/5, grid-cols-2/3/4) → stack on mobile */
+  .grid.gc-3,
+  .grid.gc-4,
+  .grid.gc-5,
+  .grid.grid-cols-3,
+  .grid.grid-cols-4 {
+    grid-template-columns: 1fr !important;
+  }
+  .grid.grid-cols-2 { grid-template-columns: 1fr 1fr !important; }
+
+  /* 2-col & 3-col side-by-side inline-style grids → stack to single column */
   [style*="5fr 7fr"],
   [style*="240px 1fr"],
   [style*="1fr 1fr"],
@@ -635,8 +645,11 @@ textarea.inp { font-family: 'Inter Tight', sans-serif; line-height: 1.5; resize:
   /* Page padding */
   .p-5 { padding: 12px !important; }
 
-  /* Panels: allow wide tables to scroll horizontally */
-  .panel { overflow-x: auto; }
+  /* Panels: allow wide tables to scroll horizontally AND isolate from parent sizing.
+     min-width:0 is critical — otherwise a wide child (min-width:620 on grid-history)
+     would blow out every flex/grid ancestor and overflow the viewport. */
+  .panel { overflow-x: auto; min-width: 0; }
+  .grid > *, .flex-col > * { min-width: 0; }
 
   /* Wide tables keep column widths and force panel to scroll horizontally.
      Only grid-* classes get min-width; sidebar inline-style rows fit natively. */
@@ -645,18 +658,56 @@ textarea.inp { font-family: 'Inter Tight', sans-serif; line-height: 1.5; resize:
   .grid-history   { min-width: 620px; }
   .grid-mod       { min-width: 780px; }
   .grid-comms     { min-width: 580px; }
-  .grid-compare   { min-width: 420px; }
   .grid-expiry    { min-width: 620px; }
   .grid-vacancy   { min-width: 580px; }
   .grid-collect   { min-width: 640px; }
   .grid-actions   { min-width: 520px; }
+  /* grid-compare: small 5-col table, refit to viewport instead of scroll */
+  .grid-compare {
+    min-width: 0 !important;
+    grid-template-columns: 1fr 48px 58px 42px 58px !important;
+  }
 
-  /* Panel header bar (caps + buttons) inside overflow panel should not scroll */
-  .panel > .flex.items-center.justify-between { flex-wrap: wrap; gap: 8px; min-width: 0; }
+  /* Tighter padding inside wide-table cells so dates like 2019-06-01 don't wrap mid-value */
+  .tbl-head > *, .tbl-row > * { padding: 7px 8px !important; }
+  /* Font-mono cells (dates, codes, numbers) never wrap — scroll instead */
+  .tbl-row > .font-mono,
+  .tbl-row > .num,
+  .tbl-head > .num,
+  .tbl-head > .font-mono { white-space: nowrap !important; }
 
-  /* Property sidebar (in Objekt tab) on mobile: collapse height */
+  /* UnitHeader / TabObject header / RentHistory header / NextIncrease / MarketContext:
+     flex items-start justify-between → column-stack on mobile */
+  .panel > .flex.items-start.justify-between,
+  .highlight > .flex.items-start.justify-between {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 12px !important;
+  }
+  .panel > .flex.items-start.justify-between > .text-right { text-align: left !important; }
+  .panel > .flex.items-start.justify-between > .flex.gap-2 { flex-wrap: wrap; justify-content: flex-start; }
+
+  /* Chip strips in headers should wrap to multiple lines */
+  .flex.items-center.gap-2.mb-2,
+  .flex.items-center.gap-2.mb-3 { flex-wrap: wrap !important; }
+
+  /* Panel header bar (caps + buttons): wrap onto multiple rows + drop fixed inline height */
+  .panel > .flex.items-center.justify-between {
+    flex-wrap: wrap;
+    gap: 8px;
+    min-width: 0;
+    height: auto !important;
+    min-height: 44px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+
+  /* Property sidebar (in Objekt/WE/Comms tabs): taller list + visual scroll hint */
   .panel [style*="maxHeight: 820"],
-  .panel [style*="max-height: 820"] { max-height: 220px !important; }
+  .panel [style*="max-height: 820"] {
+    max-height: 320px !important;
+    box-shadow: inset 0 -16px 12px -12px rgba(12,26,46,0.08);
+  }
 
   /* Headings tighter */
   .h1 { font-size: 22px !important; line-height: 1.15 !important; }
@@ -671,6 +722,7 @@ textarea.inp { font-family: 'Inter Tight', sans-serif; line-height: 1.5; resize:
   .modal-backdrop { padding: 10px !important; }
   .modal { max-height: 92vh; overflow-y: auto; }
   .modal .grid.grid-cols-4 { grid-template-columns: 1fr 1fr !important; }
+  .modal .grid.grid-cols-2 { grid-template-columns: 1fr !important; }
 
   /* Legal pages (Impressum / Datenschutz) */
   .legal-topbar { padding: 10px 14px !important; }
