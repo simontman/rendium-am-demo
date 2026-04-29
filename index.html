@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Rendium · Asset Management</title>
-<meta name="description" content="Rendium Asset Management — interaktive Plattform für institutionelle Bestandshalter, Family Offices und Property Manager. KI-gestützte Mieterhöhungen, Kommunikationshistorie, Modernisierungs-Cockpit." />
+<meta name="description" content="Rendium Asset Management — interaktive Plattform für institutionelle Bestandshalter, Family Offices und Property Manager. KI-gestützte Mieterhöhungen, Modernisierungs-Cockpit." />
 <meta property="og:title" content="Rendium · Asset Management" />
 <meta property="og:description" content="Interaktive Plattform für institutionelle Bestandshalter. KI-gestütztes Asset Management." />
 <meta property="og:type" content="website" />
@@ -938,7 +938,6 @@ function TopHeader({ tab, setTab, crumbs }) {
     { id:'PORTFOLIO',    label:'Portfolio' },
     { id:'OBJEKT',       label:'Objekt' },
     { id:'WOHNEINHEIT',  label:'Wohneinheit' },
-    { id:'KOMMUNIKATION', label:'Kommunikation' },
     { id:'CAPEX',        label:'Modernisierungen' },
   ];
   return (
@@ -1424,7 +1423,7 @@ function TabPortfolio({ onOpenProperty }) {
    TAB 2 — OBJEKT (mit Property-Sidebar)
    ========================================================================= */
 
-function TabObject({ selectedProp, setSelectedProp, onOpenUnit, onOpenComms }) {
+function TabObject({ selectedProp, setSelectedProp, onOpenUnit }) {
   const units = useMemo(() => genUnits(selectedProp.code), [selectedProp.code]);
   const leased = units.filter(u => u.status === 'VERMIETET').length;
   const vacant = units.filter(u => u.status === 'LEER').length;
@@ -1432,7 +1431,6 @@ function TabObject({ selectedProp, setSelectedProp, onOpenUnit, onOpenComms }) {
   const passing = units.filter(u => u.status === 'VERMIETET').reduce((s,u) => s+u.rent, 0);
   const totalQm = units.reduce((s,u) => s+u.qm, 0);
   const tickets = TICKETS[selectedProp.code] || TICKETS['OBJ-A'];
-  const comms = (COMMUNICATIONS[selectedProp.code] || COMMUNICATIONS['OBJ-A']).slice(0, 4);
   const occPct = ((leased / units.length) * 100);
 
   return (
@@ -1524,23 +1522,20 @@ function TabObject({ selectedProp, setSelectedProp, onOpenUnit, onOpenComms }) {
             </div>
           </div>
 
-          <div className="panel">
-            <div className="flex items-center justify-between px-4 hl-b" style={{ height: 44 }}>
-              <div className="caps">Letzte Kommunikation</div>
-              <button className="btn btn-sm" onClick={onOpenComms}>ALLE ÖFFNEN →</button>
+          <div className="panel-cream flex flex-col">
+            <div className="flex items-center px-4 hl-b" style={{ height: 44 }}>
+              <div className="caps">Kommunikations-Sync</div>
             </div>
-            <div>
-              {comms.map(c => (
-                <div key={c.id} className="px-4 py-3 hl-b-soft">
-                  <div className="flex items-center gap-2 mb-1">
-                    <ChannelChip ch={c.channel} dir={c.direction} />
-                    <span className="font-mono text-xs text-ink-3">{c.date}</span>
-                    <span className="font-mono text-xs text-ink-2">{c.unit}</span>
-                    {c.tId && <span className="font-mono text-xs text-acc">#{c.tId}</span>}
-                  </div>
-                  <div className="text-sm">{c.subject}</div>
-                </div>
-              ))}
+            <div className="px-4 py-5 flex flex-col items-center justify-center text-center" style={{ flex:'1 1 auto', gap: 12, minHeight: 220 }}>
+              <div className="font-mono" style={{ fontSize: 9.5, letterSpacing:'0.22em', color:'var(--ink-3)', textTransform:'uppercase' }}>
+                Outlook · Excel-Sync
+              </div>
+              <div className="font-mono text-ink-2" style={{ fontSize: 11.5, lineHeight: 1.7, maxWidth: 300, letterSpacing:'0.03em' }}>
+                Mieter-Kommunikation läuft im Produktiveinsatz über die bestehenden Mailboxen der Property Manager.
+              </div>
+              <div className="font-mono mt-1" style={{ fontSize: 9, letterSpacing:'0.22em', color:'var(--ink-4)', textTransform:'uppercase' }}>
+                Q3/2026 Release
+              </div>
             </div>
           </div>
         </div>
@@ -1891,9 +1886,9 @@ function TabUnit({ selectedProp, setSelectedProp, unit, setUnit, onOpenRentModal
   );
 }
 
-/* ====================================================================
-   TAB · KOMMUNIKATION
-==================================================================== */
+/* TabComms — reaktiviert in Phase 2, siehe Architektur-Roadmap.
+   Kommunikation läuft in Produktivversion über Outlook/Excel-Sync.
+
 function TabComms({ selectedProp, setSelectedProp }) {
   const [filter, setFilter] = useState('ALLE');
   const [selected, setSelected] = useState(null);
@@ -1981,6 +1976,7 @@ function TabComms({ selectedProp, setSelectedProp }) {
     </div>
   );
 }
+*/
 
 /* ====================================================================
    TAB · MODERNISIERUNGEN (früher CapEx)
@@ -2537,7 +2533,6 @@ function App() {
     crumbs.push(selectedProp.code, selectedProp.dist.toUpperCase());
     if (unit) crumbs.push(unit.n);
   }
-  if (tab === 'KOMMUNIKATION') crumbs.push(selectedProp.code, 'KOMMUNIKATION');
   if (tab === 'CAPEX')         crumbs.push('MODERNISIERUNGEN');
 
   return (
@@ -2553,7 +2548,6 @@ function App() {
           selectedProp={selectedProp}
           setSelectedProp={setSelectedProp}
           onOpenUnit={(u) => { setUnit(u); setTab('WOHNEINHEIT'); }}
-          onOpenComms={() => setTab('KOMMUNIKATION')}
         />
       )}
 
@@ -2567,10 +2561,6 @@ function App() {
           onOpenContact={() => setContactModal(true)}
           onOpenTicket={() => setTicketModal(true)}
         />
-      )}
-
-      {tab === 'KOMMUNIKATION' && (
-        <TabComms selectedProp={selectedProp} setSelectedProp={setSelectedProp} />
       )}
 
       {tab === 'CAPEX' && (
