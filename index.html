@@ -457,6 +457,21 @@ textarea.inp { font-family: 'Inter Tight', sans-serif; line-height: 1.5; resize:
   text-transform: uppercase;
 }
 
+.rendium-beta-chip {
+  display: inline-block;
+  margin-left: 7px;
+  padding: 1px 5px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px; letter-spacing: 0.18em;
+  font-weight: 500;
+  color: rgba(122,160,255,0.92);
+  border: 1px solid rgba(122,160,255,0.4);
+  background: rgba(79,127,255,0.08);
+  border-radius: 2px;
+  text-transform: uppercase;
+  vertical-align: 1px;
+}
+
 .rendium-avatar {
   display: flex; align-items: center; justify-content: center;
   width: 30px; height: 30px; border-radius: 4px;
@@ -938,7 +953,7 @@ function TopHeader({ tab, setTab, crumbs }) {
     { id:'PORTFOLIO',    label:'Portfolio' },
     { id:'OBJEKT',       label:'Objekt' },
     { id:'WOHNEINHEIT',  label:'Wohneinheit' },
-    { id:'CAPEX',        label:'Modernisierungen' },
+    { id:'CAPEX',        label:'Modernisierungen', beta: true },
   ];
   return (
     <header className="rendium-header">
@@ -962,6 +977,7 @@ function TopHeader({ tab, setTab, crumbs }) {
             <button key={t.id} onClick={() => setTab(t.id)}
                     className={`rendium-tab ${tab === t.id ? 'rendium-tab-active' : ''}`}>
               {t.label}
+              {t.beta && <span className="rendium-beta-chip">BETA</span>}
             </button>
           ))}
         </nav>
@@ -971,7 +987,7 @@ function TopHeader({ tab, setTab, crumbs }) {
           onChange={(e) => setTab(e.target.value)}
           aria-label="Bereich wählen">
           {tabs.map(t => (
-            <option key={t.id} value={t.id}>{t.label}</option>
+            <option key={t.id} value={t.id}>{t.label}{t.beta ? ' · BETA' : ''}</option>
           ))}
         </select>
         <div className="flex items-center gap-3 rendium-header-right">
@@ -2010,6 +2026,14 @@ function TabCapex({ selectedProp, setSelectedProp }) {
           <button onClick={() => setScope('OBJEKT')}    className={`chip ${scope === 'OBJEKT'    ? 'chip-on' : ''}`}>NUR {selectedProp.code}</button>
         </div>
         <div className="text-xs text-ink-3 font-mono">Modernisierungen · ImmoWertV · § 71 GEG · § 559 BGB</div>
+      </div>
+
+      {/* BETA-Hinweisstreifen */}
+      <div className="panel-cream mb-4 flex items-start" style={{ padding:'10px 14px', gap: 12 }}>
+        <span className="rendium-beta-chip" style={{ marginLeft: 0, flexShrink: 0, marginTop: 1 }}>BETA</span>
+        <div className="font-mono text-ink-2" style={{ fontSize: 10.5, lineHeight: 1.65, letterSpacing: '0.02em' }}>
+          Modernisierungs-Tracking ist in aktiver Entwicklung. Im Produktiveinsatz erfolgt Excel-Import bestehender CapEx-Pläne sowie Status-Sync mit Asana/Excel. Diese Demo zeigt synthetische Daten zur Funktionsillustration.
+        </div>
       </div>
 
       {/* KPI strip */}
